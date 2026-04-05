@@ -41,11 +41,13 @@ const elCommPreview= document.getElementById('comm-verse-preview');
 const elCommHeader = document.getElementById('comm-header');
 const elBookCards  = document.getElementById('book-cards');
 const elLogoBtn    = document.getElementById('logo-btn');
+const elFavicon    = document.getElementById('favicon');
 
 // ── Initialisation ────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   injectTabSymbols();
   buildBookCards();
+  updateFavicon('mateus');
   bindEvents();
 });
 
@@ -90,6 +92,27 @@ function buildBookCards() {
   }).join('');
 }
 
+/**
+ * Update favicon with a circle and diamond symbol.
+ * Colour changes based on the active book.
+ * @param {string} bookKey - Book identifier or 'default' for home
+ */
+function updateFavicon(bookKey) {
+  const theme = BOOK_THEMES[bookKey] || BOOK_THEMES.mateus;
+  const accentColor = theme.accent;
+  
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <rect width="64" height="64" fill="#0d0d0f"/>
+    <circle cx="32" cy="32" r="24" fill="none" stroke="${accentColor}" stroke-width="2"/>
+    <g transform="translate(32, 32)">
+      <path d="M 0,-12 L 12,0 L 0,12 L -12,0 Z" fill="${accentColor}"/>
+    </g>
+  </svg>`;
+  
+  const encodedSvg = encodeURIComponent(svg);
+  elFavicon.href = `data:image/svg+xml,${encodedSvg}`;
+}
+
 // ── Navigation ────────────────────────────────────────────────────────
 
 /** Return to the welcome screen */
@@ -100,6 +123,7 @@ function goHome() {
   document.body.classList.remove('book-active');
   showPanel('welcome');
   closeCommentary();
+  updateFavicon('mateus');
   elMain.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -111,6 +135,7 @@ async function selectBook(bookKey) {
   curBook    = bookKey;
   curChapter = null;
   applyTheme(bookKey);
+  updateFavicon(bookKey);
   document.body.classList.add('book-active');
 
   document.querySelectorAll('.book-tab').forEach(b => b.classList.remove('active'));
