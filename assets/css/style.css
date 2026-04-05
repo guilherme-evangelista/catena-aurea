@@ -34,7 +34,7 @@ html, body {
   font-family: 'Lora', Georgia, serif;
   background: var(--bg);
   color: var(--text);
-  overflow: hidden;
+  overflow: hidden;   /* scroll is managed per-panel via #main overflow-y:auto */
 }
 
 /* ── Layout grid ────────────────────────────────────────────── */
@@ -43,6 +43,7 @@ html, body {
   grid-template-columns: var(--sidebar-w) 1fr;
   grid-template-rows: var(--hdr-h) 1fr;
   height: 100vh;
+  height: 100dvh;   /* use dynamic viewport on mobile (avoids browser-chrome gap) */
 }
 
 /* ── Header ─────────────────────────────────────────────────── */
@@ -189,8 +190,11 @@ body:not(.book-active) #sidebar {
   visibility: hidden;
   pointer-events: none;
 }
-body:not(.book-active) #app {
-  grid-template-columns: 0 1fr;
+/* Collapse the sidebar column when no book is active (desktop only) */
+@media (min-width: 601px) {
+  body:not(.book-active) #app {
+    grid-template-columns: 0 1fr;
+  }
 }
 
 .sidebar-header {
@@ -637,11 +641,114 @@ body:not(.book-active) #app {
 .scale-in { animation: scaleIn .3s ease both; }
 
 /* ── Responsive ─────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  :root { --sidebar-w: 0px; }
+
+/* ---- Tablet (≤ 900px) ---- */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 200px; }
+
+  .logo-sub    { display: none; }
+  .header-divider { display: none; }
+
+  #book-tabs { gap: 2px; }
+  .book-tab  { padding: 6px 10px 6px 8px; font-size: .7rem; gap: 6px; }
+}
+
+/* ---- Mobile (≤ 600px) ---- */
+@media (max-width: 600px) {
+  :root {
+    --sidebar-w: 0px;
+    --hdr-h: 56px;
+  }
+
+  /* ── Layout: single column, header shrinks ── */
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--hdr-h) 1fr;
+  }
+
+  /* ── Header: icon only for logo, tabs icon-only ── */
+  #header {
+    padding: 0 12px;
+    gap: 8px;
+    overflow: hidden;       /* never let it overflow vertically */
+    flex-wrap: nowrap;
+  }
+
+  .logo-text,
+  .logo-sub,
+  .header-divider { display: none; }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    font-size: .75rem;
+    flex-shrink: 0;
+  }
+
+  /* ── Tabs: icon + short label, scroll if needed ── */
+  #book-tabs {
+    display: flex;
+    flex: 1;
+    gap: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  #book-tabs::-webkit-scrollbar { display: none; }
+
+  .book-tab {
+    padding: 6px 8px;
+    font-size: .66rem;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tab-symbol { width: 16px; height: 16px; }
+
+  /* ── Sidebar: hidden on mobile ── */
   #sidebar { display: none; }
-  #comm-panel { width: 100%; top: var(--hdr-h); }
-  #chapter-view { padding: 24px 20px 60px; }
-  .book-cards { grid-template-columns: repeat(2, 1fr); }
-  #book-tabs .book-tab span:not(.tab-symbol) { display: none; }
+
+  /* ── Welcome screen: full height, vertical stack ── */
+  #welcome {
+    padding: 24px 16px;
+    gap: 20px;
+    min-height: calc(100vh - var(--hdr-h));
+  }
+
+  .welcome-title h1  { font-size: 1.5rem; }
+  .welcome-title p   { font-size: .7rem; }
+
+  /* ── Book cards: 2×2 grid ── */
+  .book-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .book-card-name { font-size: .82rem; }
+  .book-card-vol  { font-size: .56rem; }
+  .book-card-cta  { display: none; }
+
+  /* ── Chapter view ── */
+  #chapter-view {
+    padding: 24px 16px 72px;
+    max-width: 100%;
+  }
+
+  .chapter-label     { font-size: 1.1rem; }
+  .chapter-header    { margin-bottom: 20px; padding-bottom: 14px; }
+  .illuminated       { font-size: 3rem; }
+  .v-text            { font-size: .95rem; line-height: 1.75; }
+
+  /* ── Commentary panel: full-screen overlay ── */
+  #comm-panel {
+    width: 100% !important;   /* override any inline resize */
+    max-width: 100%;
+    top: var(--hdr-h);
+    height: calc(100dvh - var(--hdr-h));
+  }
+  #comm-resize { display: none; }     /* no resize handle on mobile */
+  #comm-body   { padding: 16px 18px; font-size: .92rem; }
+  #comm-header { padding: 14px 16px; }
 }
