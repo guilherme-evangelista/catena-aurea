@@ -478,6 +478,8 @@ body:not(.book-active) #sidebar {
   font-size: 1.02rem;
   line-height: 1.85;
   color: var(--text-dim);
+  -webkit-user-select: text;
+  user-select: text;
 }
 .verse-row.has-commentary .v-text { color: var(--text); }
 
@@ -632,6 +634,8 @@ body:not(.book-active) #sidebar {
   flex: 1;
   font-size: .96rem;
   line-height: 1.85;
+  -webkit-user-select: text;
+  user-select: text;
 }
 #comm-body p { margin-bottom: 1em; color: var(--text-dim); }
 #comm-body p:last-child { margin-bottom: 0; }
