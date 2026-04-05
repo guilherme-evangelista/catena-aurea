@@ -87,6 +87,31 @@ html, body {
 }
 .logo-btn:hover { background: rgba(255, 255, 255, .06); }
 
+.chapter-toggle {
+  display: none;
+  border: none;
+  background: rgba(255, 255, 255, .05);
+  color: var(--text);
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  touch-action: manipulation;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.chapter-toggle:hover {
+  background: rgba(255, 255, 255, .1);
+}
+
+@media (min-width: 601px) {
+  .chapter-toggle { display: none; }
+}
+
 .logo-mark {
   width: 36px;
   height: 36px;
@@ -740,13 +765,36 @@ body:not(.book-active) #sidebar {
   }
   .tab-symbol { width: 16px; height: 16px; }
 
-  /* ── Sidebar: hidden on mobile ── */
-  #sidebar { display: none; }
+  /* ── Sidebar: hidden by default on mobile; open via chapter toggle ── */
+  #sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--hdr-h);
+    bottom: 0;
+    width: min(320px, 85vw);
+    max-width: 320px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    box-shadow: 24px 0 64px rgba(0, 0, 0, .5);
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 160;
+    display: flex;
+    flex-direction: column;
+  }
+  body.sidebar-open #sidebar {
+    transform: translateX(0);
+  }
+  .chapter-toggle { display: inline-flex; }
 
   /* ── Main content: full width ── */
   #main {
     width: 100%;
     overflow-x: hidden;
+  }
+
+  body.sidebar-open #main {
+    pointer-events: none;
   }
 
   /* ── Welcome screen: center content ── */
