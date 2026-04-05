@@ -345,6 +345,7 @@ function showCommentary(vsKey) {
   elCommHeader.style.background =
     `color-mix(in srgb, ${t.bg1} 70%, transparent)`;
   elCommBody.innerHTML = formatCommentary(block.text);
+  elCommBody.scrollTop = 0;
 
   elCommPanel.classList.add('open');
   elCommPanel.setAttribute('aria-hidden', 'false');
