@@ -9,7 +9,6 @@ Aplicação web de leitura e estudo dos quatro Evangelhos com os comentários pa
 ## Demonstração
 
 🔗 **[catena-aurea.github.io](https://guilherme-evangelista.github.io/catena-aurea)**
-*(substitua com o seu link após publicar)*
 
 ---
 
