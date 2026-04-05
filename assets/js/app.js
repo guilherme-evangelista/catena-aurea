@@ -41,6 +41,7 @@ const elCommPreview= document.getElementById('comm-verse-preview');
 const elCommHeader = document.getElementById('comm-header');
 const elBookCards  = document.getElementById('book-cards');
 const elLogoBtn    = document.getElementById('logo-btn');
+const elChapterToggle = document.getElementById('chapter-toggle');
 const elFavicon    = document.getElementById('favicon');
 
 // ── Initialisation ────────────────────────────────────────────────────
@@ -48,8 +49,19 @@ window.addEventListener('DOMContentLoaded', () => {
   injectTabSymbols();
   buildBookCards();
   updateFavicon('mateus');
+  elChapterToggle.hidden = true;
   bindEvents();
+  updateMobileControls();
 });
+
+function isMobileViewport() {
+  return window.matchMedia('(max-width: 600px)').matches;
+}
+
+function updateMobileControls() {
+  elChapterToggle.hidden = !isMobileViewport() || !curBook;
+  if (!isMobileViewport()) closeChapterPanel();
+}
 
 /** Inject SVG symbols into header tab buttons */
 function injectTabSymbols() {
@@ -121,6 +133,8 @@ function goHome() {
   curChapter = null;
   document.querySelectorAll('.book-tab').forEach(b => b.classList.remove('active'));
   document.body.classList.remove('book-active');
+  document.body.classList.remove('sidebar-open');
+  elChapterToggle.hidden = true;
   showPanel('welcome');
   closeCommentary();
   updateFavicon('mateus');
@@ -137,6 +151,7 @@ async function selectBook(bookKey) {
   applyTheme(bookKey);
   updateFavicon(bookKey);
   document.body.classList.add('book-active');
+  updateMobileControls();
 
   document.querySelectorAll('.book-tab').forEach(b => b.classList.remove('active'));
   document.getElementById(`tab-${bookKey}`).classList.add('active');
@@ -162,8 +177,18 @@ function selectChapter(ch) {
     btn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
   closeCommentary();
+  closeChapterPanel();
   renderChapter(ch);
   elMain.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeChapterPanel() {
+  document.body.classList.remove('sidebar-open');
+}
+
+function toggleChapterPanel() {
+  if (!curBook) return;
+  document.body.classList.toggle('sidebar-open');
 }
 
 // ── Data loading ──────────────────────────────────────────────────────
@@ -437,6 +462,7 @@ function bindEvents() {
       showCommentary(row.dataset.vskey);
     } else if (!e.target.closest('#comm-panel')) {
       closeCommentary();
+      closeChapterPanel();
     }
   });
   elMain.addEventListener('keydown', e => {
@@ -453,6 +479,18 @@ function bindEvents() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeCommentary();
   });
+
+  // Chapter panel toggle
+  elChapterToggle.addEventListener('click', toggleChapterPanel);
+
+  // Close mobile chapter panel when tapping outside
+  document.addEventListener('click', e => {
+    if (!document.body.classList.contains('sidebar-open')) return;
+    if (e.target.closest('#sidebar') || e.target.closest('#chapter-toggle')) return;
+    closeChapterPanel();
+  });
+
+  window.addEventListener('resize', updateMobileControls);
 
   // Drag-to-resize commentary panel
   initResizeHandle();
