@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Catena Áurea de Santo Tomás de Aquino — Exposição contínua dos quatro Evangelhos com comentários dos Santos Padres da Igreja.">
+  <meta name="author" content="Santo Tomás de Aquino">
+  <meta property="og:title" content="Catena Áurea — Santo Tomás de Aquino">
+  <meta property="og:description" content="Leia os quatro Evangelhos com os comentários patrísticos compilados por Santo Tomás de Aquino.">
+  <meta property="og:type" content="website">
+  <title>Catena Áurea — Santo Tomás de Aquino</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── HEADER ─────────────────────────────────────────── -->
+    <header id="header">
+      <button class="logo-btn" id="logo-btn" aria-label="Página inicial">
+        <div class="logo-mark" id="logo-mark">✦</div>
+        <div class="logo-text">
+          <span class="logo-title">Catena Áurea</span>
+          <span class="logo-sub">Santo Tomás de Aquino</span>
+        </div>
+      </button>
+      <div class="header-divider" aria-hidden="true"></div>
+      <nav id="book-tabs" aria-label="Evangelhos">
+        <button class="book-tab" id="tab-mateus" data-book="mateus" aria-label="Evangelho de São Mateus">
+          <span class="tab-symbol" id="sym-mateus" aria-hidden="true"></span>
+          São Mateus
+        </button>
+        <button class="book-tab" id="tab-marcos" data-book="marcos" aria-label="Evangelho de São Marcos">
+          <span class="tab-symbol" id="sym-marcos" aria-hidden="true"></span>
+          São Marcos
+        </button>
+        <button class="book-tab" id="tab-lucas" data-book="lucas" aria-label="Evangelho de São Lucas">
+          <span class="tab-symbol" id="sym-lucas" aria-hidden="true"></span>
+          São Lucas
+        </button>
+        <button class="book-tab" id="tab-joao" data-book="joao" aria-label="Evangelho de São João">
+          <span class="tab-symbol" id="sym-joao" aria-hidden="true"></span>
+          São João
+        </button>
+      </nav>
+    </header>
+
+    <!-- ── SIDEBAR ────────────────────────────────────────── -->
+    <aside id="sidebar" aria-label="Navegação por capítulos">
+      <div class="sidebar-header" id="sidebar-label">Capítulos</div>
+      <nav id="chapter-list" aria-label="Lista de capítulos"></nav>
+    </aside>
+
+    <!-- ── MAIN ───────────────────────────────────────────── -->
+    <main id="main">
+
+      <!-- Welcome / Book Gallery -->
+      <section id="welcome" aria-label="Galeria dos Evangelhos">
+        <div class="welcome-title">
+          <h1>Catena Áurea</h1>
+          <p>Exposição Contínua sobre os Santos Evangelhos</p>
+        </div>
+        <div class="book-cards" id="book-cards" role="list"></div>
+      </section>
+
+      <!-- Chapter reader -->
+      <article id="chapter-view" class="is-hidden" aria-label="Texto do Evangelho"></article>
+
+      <!-- Loading indicator -->
+      <div id="loading-indicator" class="is-hidden" aria-live="polite">
+        <div class="loading-spinner"></div>
+        <p>Carregando…</p>
+      </div>
+
+    </main>
+
+  </div><!-- #app -->
+
+  <!-- ── COMMENTARY PANEL ─────────────────────────────────── -->
+  <aside id="comm-panel" aria-label="Comentários da Catena Áurea" aria-hidden="true">
+    <div id="comm-resize" aria-hidden="true"></div>
+    <header id="comm-header">
+      <div class="comm-meta">
+        <div class="comm-book-label" id="comm-book-label">Catena Áurea</div>
+        <div class="comm-ref" id="comm-ref"></div>
+        <div class="comm-verse-preview" id="comm-verse-preview"></div>
+      </div>
+      <button id="comm-close" aria-label="Fechar comentário">✕</button>
+    </header>
+    <div id="comm-body"></div>
+  </aside>
+
+  <!-- ── SCRIPTS ───────────────────────────────────────────── -->
+  <script src="assets/js/symbols.js"></script>
+  <script src="assets/js/themes.js"></script>
+  <script src="assets/js/commentary.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
