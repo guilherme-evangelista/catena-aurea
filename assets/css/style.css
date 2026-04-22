@@ -35,6 +35,9 @@ html, body {
   background: var(--bg);
   color: var(--text);
   overflow: hidden;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* ── Layout grid ────────────────────────────────────────────── */
@@ -43,6 +46,13 @@ html, body {
   grid-template-columns: var(--sidebar-w) 1fr;
   grid-template-rows: var(--hdr-h) 1fr;
   height: 100vh;
+  height: 100dvh;
+}
+
+@supports (padding: max(0px)) {
+  #app {
+    grid-template-columns: max(0px, var(--sidebar-w)) 1fr;
+  }
 }
 
 /* ── Header ─────────────────────────────────────────────────── */
@@ -58,6 +68,7 @@ html, body {
   position: relative;
   z-index: 100;
   transition: border-color .4s;
+  padding-top: max(0px, env(safe-area-inset-top));
 }
 
 .logo-btn {
@@ -71,8 +82,35 @@ html, body {
   border-radius: 8px;
   transition: background var(--transition);
   text-decoration: none;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 .logo-btn:hover { background: rgba(255, 255, 255, .06); }
+
+.chapter-toggle {
+  display: none;
+  border: none;
+  background: rgba(255, 255, 255, .05);
+  color: var(--text);
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  touch-action: manipulation;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.chapter-toggle:hover {
+  background: rgba(255, 255, 255, .1);
+}
+
+@media (min-width: 601px) {
+  .chapter-toggle { display: none; }
+}
 
 .logo-mark {
   width: 36px;
@@ -147,6 +185,9 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   flex-shrink: 0;
+  min-height: 32px;
+  min-width: 44px;
+  touch-action: manipulation;
 }
 .book-tab::before {
   content: '';
@@ -205,8 +246,11 @@ body:not(.book-active) #sidebar {
   visibility: hidden;
   pointer-events: none;
 }
-body:not(.book-active) #app {
-  grid-template-columns: 0 1fr;
+/* Collapse the sidebar column when no book is active (desktop only) */
+@media (min-width: 601px) {
+  body:not(.book-active) #app {
+    grid-template-columns: 0 1fr;
+  }
 }
 
 .sidebar-header {
@@ -237,6 +281,8 @@ body:not(.book-active) #app {
   color: var(--text-dim);
   cursor: pointer;
   transition: all .15s;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 .ch-btn:hover { color: var(--text); background: rgba(255, 255, 255, .04); }
 .ch-btn.active {
@@ -377,6 +423,7 @@ body:not(.book-active) #app {
   padding: 40px 52px 80px;
   max-width: 860px;
   margin: 0 auto;
+  padding-bottom: calc(80px + max(0px, env(safe-area-inset-bottom)));
 }
 
 .chapter-header {
@@ -421,6 +468,9 @@ body:not(.book-active) #app {
   border-radius: 8px;
   transition: background .15s;
   cursor: default;
+  min-height: 44px;
+  align-content: center;
+  touch-action: manipulation;
 }
 .verse-row.has-commentary { cursor: pointer; }
 .verse-row.has-commentary:hover { background: rgba(255, 255, 255, .04); }
@@ -444,6 +494,8 @@ body:not(.book-active) #app {
   font-size: 1.02rem;
   line-height: 1.85;
   color: var(--text-dim);
+  -webkit-user-select: text;
+  user-select: text;
 }
 .verse-row.has-commentary .v-text { color: var(--text); }
 
@@ -750,6 +802,7 @@ body:not(.book-active) #app {
   min-width: 320px;
   max-width: 860px;
   height: calc(100vh - var(--hdr-h));
+  height: calc(100dvh - var(--hdr-h));
   background: var(--surface);
   border-left: 1px solid var(--border2);
   transform: translateX(100%);
@@ -758,6 +811,7 @@ body:not(.book-active) #app {
   display: flex;
   flex-direction: column;
   z-index: 200;
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
 #comm-panel.open { transform: translateX(0); }
 
@@ -822,6 +876,9 @@ body:not(.book-active) #app {
   cursor: pointer;
   flex-shrink: 0;
   transition: all .15s;
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 #comm-close:hover { background: rgba(255, 255, 255, .12); color: var(--text); }
 
@@ -831,6 +888,8 @@ body:not(.book-active) #app {
   flex: 1;
   font-size: .96rem;
   line-height: 1.85;
+  -webkit-user-select: text;
+  user-select: text;
 }
 #comm-body p { margin-bottom: 1em; color: var(--text-dim); }
 #comm-body p:last-child { margin-bottom: 0; }
@@ -918,4 +977,366 @@ body:not(.book-active) #app {
   .liturgy-section { padding: 18px; }
   .liturgy-two-col { grid-template-columns: 1fr; }
   #book-tabs .book-tab span:not(.tab-symbol) { display: none; }
+
+/* ---- Tablet (≤ 900px) ---- */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 200px; }
+
+  .logo-sub    { display: none; }
+  .header-divider { display: none; }
+
+  #book-tabs { gap: 2px; }
+  .book-tab  { padding: 6px 10px 6px 8px; font-size: .7rem; gap: 6px; }
+}
+
+/* ---- Mobile (≤ 600px) ---- */
+@media (max-width: 600px) {
+  :root {
+    --sidebar-w: 0px;
+    --hdr-h: 56px;
+    --radius: 8px;
+  }
+
+  /* ── Layout: single column, header shrinks ── */
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--hdr-h) 1fr;
+    height: 100dvh;
+  }
+
+  /* ── Header: icon only for logo, tabs icon-only ── */
+  #header {
+    padding: max(0px, env(safe-area-inset-top)) 12px 0 12px;
+    gap: 8px;
+    overflow: hidden;
+    flex-wrap: nowrap;
+    min-height: var(--hdr-h);
+  }
+
+  .logo-text,
+  .logo-sub,
+  .header-divider { display: none; }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    font-size: .75rem;
+    flex-shrink: 0;
+  }
+
+  .logo-btn {
+    padding: 0;
+  }
+
+  /* ── Tabs: icon + short label, scroll if needed ── */
+  #book-tabs {
+    display: flex;
+    flex: 1;
+    gap: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 4px;
+  }
+  #book-tabs::-webkit-scrollbar { display: none; }
+
+  .book-tab {
+    padding: 6px 8px;
+    font-size: .66rem;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border-radius: 6px;
+  }
+  .tab-symbol { width: 16px; height: 16px; }
+
+  /* ── Sidebar: hidden by default on mobile; open via chapter toggle ── */
+  #sidebar {
+    position: fixed;
+    left: 0;
+    top: var(--hdr-h);
+    bottom: 0;
+    width: min(320px, 85vw);
+    max-width: 320px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    box-shadow: 24px 0 64px rgba(0, 0, 0, .5);
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+    z-index: 160;
+    display: flex;
+    flex-direction: column;
+  }
+  body.sidebar-open #sidebar {
+    transform: translateX(0);
+  }
+  .chapter-toggle { display: inline-flex; }
+
+  /* ── Main content: full width ── */
+  #main {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  body.sidebar-open #main {
+    pointer-events: none;
+  }
+
+  /* ── Welcome screen: center content ── */
+  #welcome {
+    padding: 20px 16px;
+    gap: 24px;
+    min-height: calc(100dvh - var(--hdr-h));
+  }
+
+  .welcome-title {
+    padding: 0 8px;
+  }
+
+  .welcome-title h1 {
+    font-size: clamp(1.3rem, 6vw, 1.8rem);
+    margin-bottom: 8px;
+  }
+
+  .welcome-title p {
+    font-size: .68rem;
+  }
+
+  /* ── Book cards: responsive grid ── */
+  .book-cards {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 4px;
+  }
+
+  .book-card {
+    border-radius: 8px;
+    aspect-ratio: 2.2 / 3;
+  }
+
+  .book-card-symbol {
+    width: 24px;
+    height: 24px;
+  }
+
+  .book-card-name { font-size: .78rem; }
+  .book-card-vol  { font-size: .52rem; }
+  .book-card-cta  { display: none; }
+
+  /* ── Chapter view ── */
+  #chapter-view {
+    padding: 20px 16px 80px;
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-bottom: calc(80px + max(0px, env(safe-area-inset-bottom)));
+    max-width: 100%;
+  }
+
+  .chapter-header {
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+  }
+
+  .chapter-header-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .chapter-header-text .chapter-label {
+    font-size: 1.2rem;
+  }
+
+  .verse-row {
+    grid-template-columns: 38px 1fr;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .v-num {
+    font-size: .65rem;
+    padding-top: 3px;
+  }
+
+  .v-text {
+    font-size: .96rem;
+    line-height: 1.7;
+  }
+
+  .illuminated {
+    font-size: 2.8rem;
+    line-height: .8;
+    margin-right: 4px;
+  }
+
+  .chapter-ornament {
+    padding: 28px 0 6px;
+    font-size: .65rem;
+  }
+
+  /* ── Commentary panel: full-screen overlay ── */
+  #comm-panel {
+    position: fixed;
+    right: 0;
+    top: var(--hdr-h);
+    width: 100% !important;
+    max-width: 100%;
+    height: calc(100dvh - var(--hdr-h));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  #comm-panel.open {
+    transform: translateY(0);
+  }
+
+  #comm-resize { display: none; }
+
+  #comm-header {
+    padding: 14px 16px 12px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  #comm-close {
+    width: 32px;
+    height: 32px;
+    font-size: .9rem;
+  }
+
+  #comm-body {
+    padding: 16px;
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-bottom: calc(16px + max(0px, env(safe-area-inset-bottom)));
+    font-size: .93rem;
+    line-height: 1.7;
+  }
+
+  /* ── Loading indicator ── */
+  #loading-indicator {
+    gap: 12px;
+    font-size: .8rem;
+  }
+
+  .loading-spinner {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ---- Very small phones (≤ 360px) ---- */
+@media (max-width: 360px) {
+  :root {
+    --hdr-h: 52px;
+  }
+
+  #header {
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    font-size: .65rem;
+  }
+
+  .book-tab {
+    padding: 5px 6px;
+    font-size: .6rem;
+  }
+
+  .tab-symbol { width: 14px; height: 14px; }
+
+  #welcome {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .welcome-title h1 {
+    font-size: 1.2rem;
+  }
+
+  .book-cards {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    padding: 0 2px;
+  }
+
+  .book-card-name { font-size: .7rem; }
+
+  #chapter-view {
+    padding: 16px 12px 72px;
+  }
+
+  .verse-row {
+    grid-template-columns: 32px 1fr;
+    gap: 4px;
+    padding: 5px 6px;
+  }
+
+  .v-text {
+    font-size: .92rem;
+    line-height: 1.65;
+  }
+
+  .illuminated {
+    font-size: 2.2rem;
+    margin-right: 3px;
+  }
+}
+
+/* ---- Landscape orientation (all widths) ---- */
+@media (max-height: 500px) {
+  :root {
+    --hdr-h: 48px;
+  }
+
+  #header {
+    padding: 0 8px;
+  }
+
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+  }
+
+  .book-tab {
+    padding: 4px 6px;
+    font-size: .6rem;
+  }
+
+  #welcome {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .welcome-title h1 {
+    font-size: 1.1rem;
+  }
+
+  .book-cards {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+  }
+
+  #chapter-view {
+    padding: 16px 16px 40px;
+  }
+
+  .chapter-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+
+  .v-text {
+    font-size: .9rem;
+    line-height: 1.6;
+  }
 }
