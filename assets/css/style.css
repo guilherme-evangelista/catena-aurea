@@ -539,6 +539,23 @@ body:not(.book-active) #sidebar {
   padding: 28px 40px 80px;
   max-width: 980px;
   margin: 0 auto;
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+#liturgy-view * {
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+#liturgy-view button,
+#liturgy-view input,
+#liturgy-view label {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .liturgy-shell {
