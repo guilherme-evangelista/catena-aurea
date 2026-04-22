@@ -240,6 +240,8 @@ async function selectLiturgy(isoDate = liturgyState.date) {
     renderLiturgyError(err, isoDate);
     showPanel('liturgy');
   }
+}
+
 function closeChapterPanel() {
   document.body.classList.remove('sidebar-open');
 }
