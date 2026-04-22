@@ -20,6 +20,7 @@ Aplicação web de leitura e estudo dos quatro Evangelhos com os comentários pa
 - 🦁 Ícones vectorizados dos quatro viventes (Anjo, Leão, Touro, Águia)
 - 🔍 Navegação por capítulo com indicação de versículos comentados
 - ↔ Painel lateral de comentários redimensionável por arrasto
+- 📅 Liturgia Diária via API pública, com calendário central, navegação por dia e Evangelho conectado aos comentários da Catena Áurea
 - ⚡ Carregamento lazy — cada Evangelho é carregado sob demanda
 - 📱 Responsivo (mobile/tablet/desktop)
 - 🌐 Funciona offline após o primeiro carregamento
