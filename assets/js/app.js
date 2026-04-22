@@ -24,12 +24,24 @@ let curBook    = null;
 let curChapter = null;
 /** Cache of loaded book data objects, keyed by book key */
 const bookCache = {};
+/** Cache of daily liturgy API responses, keyed by ISO date */
+const liturgyCache = {};
+/** Daily liturgy API endpoint */
+const LITURGY_API = 'https://liturgia.up.railway.app/v2/';
+/** Current liturgy UI state */
+const liturgyState = {
+  date: toISODate(new Date()),
+  data: null,
+  gospelRef: null,
+  verseTexts: {},
+};
 
 // ── DOM refs ──────────────────────────────────────────────────────────
 const elApp        = document.getElementById('app');
 const elMain       = document.getElementById('main');
 const elWelcome    = document.getElementById('welcome');
 const elChView     = document.getElementById('chapter-view');
+const elLiturgyView= document.getElementById('liturgy-view');
 const elLoading    = document.getElementById('loading-indicator');
 const elChList     = document.getElementById('chapter-list');
 const elSideLabel  = document.getElementById('sidebar-label');
@@ -41,6 +53,7 @@ const elCommPreview= document.getElementById('comm-verse-preview');
 const elCommHeader = document.getElementById('comm-header');
 const elBookCards  = document.getElementById('book-cards');
 const elLogoBtn    = document.getElementById('logo-btn');
+const elLiturgyTab = document.getElementById('tab-liturgia');
 
 // ── Initialisation ────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
@@ -98,6 +111,7 @@ function goHome() {
   curChapter = null;
   document.querySelectorAll('.book-tab').forEach(b => b.classList.remove('active'));
   document.body.classList.remove('book-active');
+  document.body.classList.remove('liturgy-active');
   showPanel('welcome');
   closeCommentary();
   elMain.scrollTo({ top: 0, behavior: 'smooth' });
@@ -112,6 +126,7 @@ async function selectBook(bookKey) {
   curChapter = null;
   applyTheme(bookKey);
   document.body.classList.add('book-active');
+  document.body.classList.remove('liturgy-active');
 
   document.querySelectorAll('.book-tab').forEach(b => b.classList.remove('active'));
   document.getElementById(`tab-${bookKey}`).classList.add('active');
@@ -139,6 +154,51 @@ function selectChapter(ch) {
   closeCommentary();
   renderChapter(ch);
   elMain.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * Load and display the daily liturgy for a chosen date.
+ * @param {string} isoDate - YYYY-MM-DD
+ */
+async function selectLiturgy(isoDate = liturgyState.date) {
+  curBook    = null;
+  curChapter = null;
+  liturgyState.date = isoDate;
+  liturgyState.gospelRef = null;
+  liturgyState.verseTexts = {};
+
+  document.body.classList.remove('book-active');
+  document.body.classList.add('liturgy-active');
+  document.querySelectorAll('.book-tab').forEach(b => b.classList.remove('active'));
+  if (elLiturgyTab) elLiturgyTab.classList.add('active');
+  elSideLabel.textContent = 'Liturgia';
+  elChList.innerHTML = '';
+  closeCommentary();
+  showPanel('loading');
+
+  try {
+    const data = await loadLiturgy(isoDate);
+    liturgyState.data = data;
+
+    const gospel = firstReading(data.leituras?.evangelho);
+    const gospelRef = parseGospelReference(gospel?.referencia || '');
+    liturgyState.gospelRef = gospelRef;
+
+    if (gospelRef) {
+      curBook    = gospelRef.bookKey;
+      curChapter = String(gospelRef.chapter);
+      applyTheme(curBook);
+      await loadBook(curBook);
+    }
+
+    renderLiturgy(data, gospelRef);
+    showPanel('liturgy');
+    elMain.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    console.error('[Catena Áurea] Liturgy load error:', err);
+    renderLiturgyError(err, isoDate);
+    showPanel('liturgy');
+  }
 }
 
 // ── Data loading ──────────────────────────────────────────────────────
@@ -195,6 +255,26 @@ function loadBook(bookKey) {
   });
 }
 
+/**
+ * Load the daily liturgy from the public API.
+ * @param {string} isoDate - YYYY-MM-DD
+ * @returns {Promise<object>}
+ */
+async function loadLiturgy(isoDate) {
+  if (liturgyCache[isoDate]) return liturgyCache[isoDate];
+
+  const { day, month, year } = datePartsFromISO(isoDate);
+  const url = `${LITURGY_API}?dia=${day}&mes=${month}&ano=${year}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`A API respondeu com status ${response.status}.`);
+  }
+
+  const data = await response.json();
+  liturgyCache[isoDate] = data;
+  return data;
+}
+
 function onError(err) {
   console.error('[Catena Áurea] Data load error:', err);
   elChView.innerHTML = `
@@ -219,7 +299,12 @@ function onError(err) {
 
 /** Show one of: 'welcome' | 'chapter' | 'loading' */
 function showPanel(which) {
-  const panels = { welcome: elWelcome, chapter: elChView, loading: elLoading };
+  const panels = {
+    welcome: elWelcome,
+    chapter: elChView,
+    liturgy: elLiturgyView,
+    loading: elLoading,
+  };
   Object.entries(panels).forEach(([name, el]) => {
     el.classList.toggle('is-hidden', name !== which);
   });
@@ -303,6 +388,255 @@ function renderChapter(ch) {
 }
 
 /**
+ * Render the complete daily liturgy view.
+ * @param {object} data
+ * @param {object|null} gospelRef
+ */
+function renderLiturgy(data, gospelRef) {
+  const isoDate = parseApiDate(data.data) || liturgyState.date;
+  liturgyState.date = isoDate;
+  liturgyState.verseTexts = {};
+
+  const leituras  = data.leituras || {};
+  const oracoes   = data.oracoes || {};
+  const antifonas = data.antifonas || {};
+  const gospel    = firstReading(leituras.evangelho);
+
+  elLiturgyView.innerHTML = `
+    <div class="liturgy-shell">
+      ${renderLiturgyControls(isoDate)}
+
+      <header class="liturgy-hero fade-up">
+        <div class="liturgy-eyebrow">Liturgia Diária</div>
+        <h1>${escHtml(data.liturgia || 'Liturgia diária')}</h1>
+        <div class="liturgy-meta-row">
+          <span>${escHtml(formatLongDate(isoDate))}</span>
+          ${data.cor ? `<span class="liturgy-color">${escHtml(data.cor)}</span>` : ''}
+        </div>
+      </header>
+
+      ${renderAntiphons(antifonas)}
+      ${renderPrayerSections(oracoes)}
+      ${renderReadingGroup('Primeira Leitura', leituras.primeiraLeitura)}
+      ${renderReadingGroup('Salmo Responsorial', leituras.salmo, true)}
+      ${renderReadingGroup('Segunda Leitura', leituras.segundaLeitura)}
+      ${renderGospelReading(gospel, gospelRef)}
+      ${renderReadingGroup('Leituras Complementares', leituras.extras)}
+    </div>`;
+
+  bindLiturgyControls();
+}
+
+/**
+ * Render a friendly error state while keeping the date controls available.
+ * @param {Error} err
+ * @param {string} isoDate
+ */
+function renderLiturgyError(err, isoDate) {
+  elLiturgyView.innerHTML = `
+    <div class="liturgy-shell">
+      ${renderLiturgyControls(isoDate)}
+      <section class="liturgy-section liturgy-error fade-up">
+        <div class="liturgy-section-header">
+          <div>
+            <div class="liturgy-kicker">Liturgia Diária</div>
+            <h2>Não foi possível carregar esta data</h2>
+          </div>
+        </div>
+        <p>${escHtml(err.message || 'Verifique a conexão e tente novamente.')}</p>
+      </section>
+    </div>`;
+  bindLiturgyControls();
+}
+
+/**
+ * Render the centered date picker and day navigation buttons.
+ * @param {string} isoDate
+ * @returns {string}
+ */
+function renderLiturgyControls(isoDate) {
+  return `
+    <div class="liturgy-nav fade-up">
+      <button class="liturgy-day-btn" id="liturgy-prev" aria-label="Dia anterior" title="Dia anterior">&lsaquo;</button>
+      <label class="liturgy-date-picker">
+        <span>Escolher dia</span>
+        <input type="date" id="liturgy-date" value="${escHtml(isoDate)}" aria-label="Escolher dia da liturgia">
+      </label>
+      <button class="liturgy-day-btn" id="liturgy-next" aria-label="Dia seguinte" title="Dia seguinte">&rsaquo;</button>
+    </div>`;
+}
+
+/**
+ * Render entrance and communion antiphons.
+ * @param {object} antifonas
+ * @returns {string}
+ */
+function renderAntiphons(antifonas) {
+  const items = [
+    ['Antífona de Entrada', antifonas.entrada],
+    ['Antífona da Comunhão', antifonas.comunhao],
+  ].filter(([, text]) => text);
+
+  if (!items.length) return '';
+
+  return `<section class="liturgy-section liturgy-antiphons fade-up">
+    <div class="liturgy-section-header">
+      <div>
+        <div class="liturgy-kicker">Antífonas</div>
+        <h2>Textos próprios</h2>
+      </div>
+    </div>
+    <div class="liturgy-two-col">
+      ${items.map(([label, text]) => `
+        <div class="liturgy-mini">
+          <h3>${escHtml(label)}</h3>
+          <p>${formatPlainText(text)}</p>
+        </div>`).join('')}
+    </div>
+  </section>`;
+}
+
+/**
+ * Render the collect, offerings, communion and extra prayers.
+ * @param {object} oracoes
+ * @returns {string}
+ */
+function renderPrayerSections(oracoes) {
+  const items = [
+    ['Oração do Dia', oracoes.coleta],
+    ['Sobre as Oferendas', oracoes.oferendas],
+    ['Depois da Comunhão', oracoes.comunhao],
+  ].filter(([, text]) => text);
+
+  const extras = Array.isArray(oracoes.extras) ? oracoes.extras : [];
+  extras.forEach((extra, index) => {
+    if (typeof extra === 'string' && extra.trim()) {
+      items.push([`Oração ${index + 1}`, extra]);
+    } else if (extra && (extra.titulo || extra.texto || extra.text)) {
+      items.push([extra.titulo || `Oração ${index + 1}`, extra.texto || extra.text || '']);
+    }
+  });
+
+  if (!items.length) return '';
+
+  return `<section class="liturgy-section fade-up">
+    <div class="liturgy-section-header">
+      <div>
+        <div class="liturgy-kicker">Orações</div>
+        <h2>Orações da celebração</h2>
+      </div>
+    </div>
+    <div class="liturgy-prayers">
+      ${items.map(([label, text]) => `
+        <div class="liturgy-prayer">
+          <h3>${escHtml(label)}</h3>
+          <p>${formatPlainText(text)}</p>
+        </div>`).join('')}
+    </div>
+  </section>`;
+}
+
+/**
+ * Render one group of readings from the API.
+ * @param {string} label
+ * @param {Array<object>} readings
+ * @param {boolean} isPsalm
+ * @returns {string}
+ */
+function renderReadingGroup(label, readings, isPsalm = false) {
+  if (!Array.isArray(readings) || readings.length === 0) return '';
+
+  return readings.map(reading => {
+    const readingText = reading.texto || reading.text || '';
+
+    return `
+      <section class="liturgy-section liturgy-reading fade-up">
+        <div class="liturgy-section-header">
+          <div>
+            <div class="liturgy-kicker">${escHtml(label)}</div>
+            ${reading.referencia ? `<div class="liturgy-reference">${escHtml(reading.referencia)}</div>` : ''}
+            ${reading.titulo ? `<h2>${escHtml(reading.titulo)}</h2>` : ''}
+          </div>
+        </div>
+        ${isPsalm && reading.refrao ? `<p class="liturgy-psalm-response">${formatPlainText(reading.refrao)}</p>` : ''}
+        <div class="liturgy-text">${formatVerseMarkers(readingText)}</div>
+      </section>`;
+  }).join('');
+}
+
+/**
+ * Render the Gospel with clickable verses connected to Catena commentary.
+ * @param {object|null} gospel
+ * @param {object|null} gospelRef
+ * @returns {string}
+ */
+function renderGospelReading(gospel, gospelRef) {
+  if (!gospel) return '';
+
+  const hasCatena = !!(gospelRef && bookCache[gospelRef.bookKey]);
+  const gospelText = gospel.texto || gospel.text || '';
+
+  return `
+    <section class="liturgy-section liturgy-gospel fade-up">
+      <div class="liturgy-section-header">
+        <div>
+          <div class="liturgy-kicker">Evangelho</div>
+          ${gospel.referencia ? `<div class="liturgy-reference">${escHtml(gospel.referencia)}</div>` : ''}
+          ${gospel.titulo ? `<h2>${escHtml(gospel.titulo)}</h2>` : ''}
+        </div>
+      </div>
+      <div class="liturgy-gospel-text">
+        ${renderLiturgyGospelText(gospelText, gospelRef)}
+      </div>
+      ${hasCatena ? `
+        <p class="liturgy-hint">Catena Áurea disponível para esta perícope do Evangelho.</p>
+      ` : `
+        <p class="liturgy-hint">A referência deste Evangelho não pôde ser vinculada automaticamente aos comentários da Catena Áurea.</p>
+      `}
+    </section>`;
+}
+
+/**
+ * Render Gospel text as verse spans.
+ * @param {string} text
+ * @param {object|null} gospelRef
+ * @returns {string}
+ */
+function renderLiturgyGospelText(text, gospelRef) {
+  const parts = splitGospelText(text, gospelRef);
+  if (!parts.verses.length) {
+    return `<p>${formatVerseMarkers(text)}</p>`;
+  }
+
+  const book = gospelRef ? bookCache[gospelRef.bookKey] : null;
+  const comm = book?.commentary?.[String(gospelRef.chapter)] || {};
+  const commMap = buildCommMap(comm);
+
+  const intro = parts.intro
+    ? `<p class="liturgy-gospel-intro">${formatPlainText(parts.intro)}</p>`
+    : '';
+
+  const verses = parts.verses.map(part => {
+    const verseKey = String(part.verse);
+    const commentaryKey = commMap[verseKey];
+    liturgyState.verseTexts[verseKey] = part.text;
+
+    const cls = commentaryKey
+      ? 'liturgy-verse has-commentary'
+      : 'liturgy-verse';
+    const interactiveAttrs = commentaryKey
+      ? ` data-vskey="${escHtml(commentaryKey)}" role="button" tabindex="0"`
+      : '';
+
+    return `<span class="${cls}" data-verse="${escHtml(verseKey)}"${interactiveAttrs}>
+      <sup class="lit-v-num">${escHtml(part.label)}</sup>${formatPlainText(part.text)}
+    </span>`;
+  }).join(' ');
+
+  return `${intro}<p class="liturgy-verse-flow">${verses}</p>`;
+}
+
+/**
  * Build a verse-number → commentary-block-key lookup map.
  * Handles multi-verse ranges (e.g. range "5:1–3" → keys 1, 2, 3 all map to '1').
  * @param {object} comm - Commentary object for one chapter
@@ -325,8 +659,9 @@ function buildCommMap(comm) {
 /**
  * Open the commentary panel for a given verse key.
  * @param {string} vsKey
+ * @param {object} opts
  */
-function showCommentary(vsKey) {
+function showCommentary(vsKey, opts = {}) {
   const book  = bookCache[curBook];
   const m     = BOOK_META[curBook];
   const t     = BOOK_THEMES[curBook];
@@ -338,7 +673,7 @@ function showCommentary(vsKey) {
 
   elCommLabel.textContent  = `${m.name} — Catena Áurea`;
   elCommRef.textContent    = block.range;
-  const previewText        = book.gospel[curChapter]?.[vsKey] || '';
+  const previewText        = opts.previewText || book.gospel[curChapter]?.[vsKey] || '';
   elCommPreview.textContent = previewText.length > 180
     ? previewText.slice(0, 177) + '…'
     : previewText;
@@ -354,7 +689,7 @@ function showCommentary(vsKey) {
 function closeCommentary() {
   elCommPanel.classList.remove('open');
   elCommPanel.setAttribute('aria-hidden', 'true');
-  document.querySelectorAll('.verse-row.highlighted')
+  document.querySelectorAll('.verse-row.highlighted, .liturgy-verse.highlighted')
     .forEach(r => r.classList.remove('highlighted'));
 }
 
@@ -363,7 +698,7 @@ function closeCommentary() {
  * @param {string} rangeStr
  */
 function highlightVerses(rangeStr) {
-  document.querySelectorAll('.verse-row.highlighted')
+  document.querySelectorAll('.verse-row.highlighted, .liturgy-verse.highlighted')
     .forEach(r => r.classList.remove('highlighted'));
   const match = rangeStr.match(/\d+:(\d+)(?:[–\-](\d+))?/);
   if (!match) return;
@@ -372,6 +707,10 @@ function highlightVerses(rangeStr) {
     const vn = row.querySelector('.v-num');
     if (vn && +vn.textContent >= s && +vn.textContent <= e)
       row.classList.add('highlighted');
+  });
+  document.querySelectorAll('.liturgy-verse[data-verse]').forEach(verse => {
+    const vn = +verse.dataset.verse;
+    if (vn >= s && vn <= e) verse.classList.add('highlighted');
   });
 }
 
@@ -382,9 +721,12 @@ function bindEvents() {
   elLogoBtn.addEventListener('click', goHome);
 
   // Book tabs
-  document.querySelectorAll('.book-tab').forEach(btn => {
+  document.querySelectorAll('.book-tab[data-book]').forEach(btn => {
     btn.addEventListener('click', () => selectBook(btn.dataset.book));
   });
+  if (elLiturgyTab) {
+    elLiturgyTab.addEventListener('click', () => selectLiturgy(liturgyState.date));
+  }
 
   // Book cards (event delegation)
   elBookCards.addEventListener('click', e => {
@@ -406,6 +748,12 @@ function bindEvents() {
 
   // Verse clicks (event delegation on main)
   elMain.addEventListener('click', e => {
+    const liturgyVerse = e.target.closest('.liturgy-verse.has-commentary');
+    if (liturgyVerse) {
+      showLiturgyCommentary(liturgyVerse);
+      return;
+    }
+
     const row = e.target.closest('.verse-row.has-commentary');
     if (row) {
       showCommentary(row.dataset.vskey);
@@ -415,6 +763,13 @@ function bindEvents() {
   });
   elMain.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
+      const liturgyVerse = e.target.closest('.liturgy-verse.has-commentary');
+      if (liturgyVerse) {
+        e.preventDefault();
+        showLiturgyCommentary(liturgyVerse);
+        return;
+      }
+
       const row = e.target.closest('.verse-row.has-commentary');
       if (row) { e.preventDefault(); showCommentary(row.dataset.vskey); }
     }
@@ -430,6 +785,31 @@ function bindEvents() {
 
   // Drag-to-resize commentary panel
   initResizeHandle();
+}
+
+/**
+ * Open commentary for a clicked verse in the liturgy Gospel.
+ * @param {HTMLElement} verseEl
+ */
+function showLiturgyCommentary(verseEl) {
+  const verse = verseEl.dataset.verse;
+  const previewText = liturgyState.verseTexts[verse] || verseEl.textContent.trim();
+  showCommentary(verseEl.dataset.vskey, { previewText });
+}
+
+/** Bind controls inside the freshly rendered liturgy view. */
+function bindLiturgyControls() {
+  const prev = document.getElementById('liturgy-prev');
+  const next = document.getElementById('liturgy-next');
+  const date = document.getElementById('liturgy-date');
+
+  if (prev) prev.addEventListener('click', () => selectLiturgy(shiftISODate(liturgyState.date, -1)));
+  if (next) next.addEventListener('click', () => selectLiturgy(shiftISODate(liturgyState.date, 1)));
+  if (date) {
+    date.addEventListener('change', () => {
+      if (date.value) selectLiturgy(date.value);
+    });
+  }
 }
 
 // ── Drag-to-resize ────────────────────────────────────────────────────
@@ -471,6 +851,212 @@ function initResizeHandle() {
 }
 
 // ── Utility ───────────────────────────────────────────────────────────
+
+/**
+ * Return the first reading object from an API reading list.
+ * @param {Array<object>} readings
+ * @returns {object|null}
+ */
+function firstReading(readings) {
+  return Array.isArray(readings) && readings.length ? readings[0] : null;
+}
+
+/**
+ * Parse a Gospel reference such as "Jo 6, 35-40".
+ * @param {string} ref
+ * @returns {object|null}
+ */
+function parseGospelReference(ref) {
+  if (/[-–]\s*\d+\s*,/.test(ref)) return null;
+
+  const match = String(ref).match(/^\s*([1-3]?\s*[A-Za-zÀ-ÿ]+)\.?\s+(\d+)\s*,\s*(\d+[a-z]?)(?:\s*[-–]\s*(\d+[a-z]?))?/i);
+  if (!match) return null;
+
+  const bookToken = normalizeBookToken(match[1]);
+  const bookMap = {
+    mt: 'mateus',
+    mat: 'mateus',
+    mateus: 'mateus',
+    mc: 'marcos',
+    marcos: 'marcos',
+    lc: 'lucas',
+    lucas: 'lucas',
+    jo: 'joao',
+    joao: 'joao',
+    jn: 'joao',
+    john: 'joao',
+  };
+  const bookKey = bookMap[bookToken];
+  if (!bookKey) return null;
+
+  const startVerse = parseVerseNumber(match[3]);
+  const endVerse = match[4] ? parseVerseNumber(match[4]) : startVerse;
+  if (!startVerse || !endVerse) return null;
+
+  return {
+    bookKey,
+    chapter: Number(match[2]),
+    startVerse,
+    endVerse,
+  };
+}
+
+/**
+ * Normalize biblical book abbreviations for matching.
+ * @param {string} token
+ * @returns {string}
+ */
+function normalizeBookToken(token) {
+  return String(token)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '');
+}
+
+/**
+ * Extract the numeric part of a verse token such as "1b" or "12a".
+ * @param {string} token
+ * @returns {number|null}
+ */
+function parseVerseNumber(token) {
+  const match = String(token).match(/\d+/);
+  return match ? Number(match[0]) : null;
+}
+
+/**
+ * Split Gospel text into an intro plus verse segments based on inline verse numbers.
+ * @param {string} text
+ * @param {object|null} gospelRef
+ * @returns {{intro: string, verses: Array<object>}}
+ */
+function splitGospelText(text, gospelRef) {
+  const source = String(text || '');
+  const matches = [];
+  const markerRe = /(^|[\s\n.!?])(\d{1,3}[a-z]?)(?=[^\s.,;:)\]])/g;
+  let match;
+
+  while ((match = markerRe.exec(source)) !== null) {
+    const verse = parseVerseNumber(match[2]);
+    if (!verse) continue;
+    if (gospelRef && (verse < gospelRef.startVerse || verse > gospelRef.endVerse)) continue;
+
+    const markerStart = match.index + match[1].length;
+    matches.push({
+      verse,
+      label: match[2],
+      markerStart,
+      contentStart: markerStart + match[2].length,
+    });
+  }
+
+  if (!matches.length) {
+    if (gospelRef?.startVerse) {
+      return {
+        intro: '',
+        verses: [{
+          verse: gospelRef.startVerse,
+          label: String(gospelRef.startVerse),
+          text: source.trim(),
+        }],
+      };
+    }
+    return { intro: '', verses: [] };
+  }
+
+  const intro = source.slice(0, matches[0].markerStart).trim();
+  const verses = matches.map((item, index) => {
+    const next = matches[index + 1];
+    return {
+      verse: item.verse,
+      label: item.label,
+      text: source.slice(item.contentStart, next ? next.markerStart : source.length).trim(),
+    };
+  });
+
+  return { intro, verses };
+}
+
+/**
+ * Escape plain text and preserve line breaks.
+ * @param {string} text
+ * @returns {string}
+ */
+function formatPlainText(text) {
+  return escHtml(text || '').replace(/\n/g, '<br>');
+}
+
+/**
+ * Convert inline verse numbers into superscript markers.
+ * @param {string} text
+ * @returns {string}
+ */
+function formatVerseMarkers(text) {
+  return escHtml(text || '')
+    .replace(/(^|[\s\n.!?])(\d{1,3}[a-z]?)(?=[^\s.,;:)\]])/g, '$1<sup class="lit-v-num">$2</sup>')
+    .replace(/\n/g, '<br>');
+}
+
+/**
+ * Convert a Date to a local ISO date (YYYY-MM-DD).
+ * @param {Date} date
+ * @returns {string}
+ */
+function toISODate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Parse an API date formatted as DD/MM/YYYY.
+ * @param {string} value
+ * @returns {string|null}
+ */
+function parseApiDate(value) {
+  const match = String(value || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return match ? `${match[3]}-${match[2]}-${match[1]}` : null;
+}
+
+/**
+ * Convert an ISO date into API day/month/year parameters.
+ * @param {string} isoDate
+ * @returns {{day: string, month: string, year: string}}
+ */
+function datePartsFromISO(isoDate) {
+  const [year, month, day] = String(isoDate).split('-');
+  return { day, month, year };
+}
+
+/**
+ * Add days to an ISO date.
+ * @param {string} isoDate
+ * @param {number} delta
+ * @returns {string}
+ */
+function shiftISODate(isoDate, delta) {
+  const [year, month, day] = String(isoDate).split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  date.setDate(date.getDate() + delta);
+  return toISODate(date);
+}
+
+/**
+ * Format an ISO date in Portuguese for display.
+ * @param {string} isoDate
+ * @returns {string}
+ */
+function formatLongDate(isoDate) {
+  const [year, month, day] = String(isoDate).split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return new Intl.DateTimeFormat('pt-BR', {
+    weekday: 'long',
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+}
 
 function escHtml(str) {
   return String(str)
