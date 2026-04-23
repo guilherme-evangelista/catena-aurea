@@ -27,6 +27,22 @@
   --transition: .2s ease;
 }
 
+:root[data-color-mode="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-color-mode="light"] {
+  color-scheme: light;
+  --bg:          #f4f0e8;
+  --surface:     #fbf7ef;
+  --surface2:    #ede6d9;
+  --border:      rgba(45, 37, 28, .12);
+  --border2:     rgba(45, 37, 28, .2);
+  --text:        #231f19;
+  --text-dim:    rgba(35, 31, 25, .68);
+  --text-faint:  rgba(35, 31, 25, .42);
+}
+
 /* ── Reset ──────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -69,6 +85,9 @@ html, body {
   z-index: 100;
   transition: border-color .4s;
   padding-top: max(0px, env(safe-area-inset-top));
+}
+:root[data-color-mode="light"] #header {
+  background: rgba(244, 240, 232, .92);
 }
 
 .logo-btn {
@@ -232,6 +251,33 @@ html, body {
   font-size: .92rem;
 }
 
+.theme-mode-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+.theme-mode-btn .mode-icon,
+.theme-mode-btn svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+.theme-mode-btn svg {
+  stroke: currentColor;
+}
+
+:root[data-color-mode="light"] .liturgy-section {
+  background: var(--surface);
+  border-color: rgba(45, 37, 28, .16);
+}
+
+:root[data-color-mode="light"] .book-tab::before,
+:root[data-color-mode="light"] .logo-btn:hover {
+  background: rgba(45, 37, 28, .06);
+}
+
 /* ── Sidebar ────────────────────────────────────────────────── */
 #sidebar {
   background: var(--surface);
@@ -290,6 +336,16 @@ body:not(.book-active) #sidebar {
   font-weight: 600;
   background: rgba(255, 255, 255, .05);
   border-left-color: var(--book-accent);
+}
+:root[data-color-mode="light"] .ch-btn:hover {
+  color: var(--text);
+  background: rgba(35, 31, 25, .08);
+}
+:root[data-color-mode="light"] .ch-btn.active {
+  background: color-mix(in srgb, var(--book-accent) 12%, transparent);
+}
+:root[data-color-mode="light"] .ch-btn.active:hover {
+  background: color-mix(in srgb, var(--book-accent) 18%, rgba(35, 31, 25, .06));
 }
 .ch-dot {
   width: 5px;
@@ -474,6 +530,9 @@ body:not(.book-active) #sidebar {
 }
 .verse-row.has-commentary { cursor: pointer; }
 .verse-row.has-commentary:hover { background: rgba(255, 255, 255, .04); }
+:root[data-color-mode="light"] .verse-row.has-commentary:hover {
+  background: rgba(35, 31, 25, .06);
+}
 .verse-row.highlighted {
   background: color-mix(in srgb, var(--book-accent) 12%, transparent);
 }
@@ -756,6 +815,9 @@ body:not(.book-active) #sidebar {
 .liturgy-verse.has-commentary:hover {
   background: rgba(255, 255, 255, .06);
 }
+:root[data-color-mode="light"] .liturgy-verse.has-commentary:hover {
+  background: rgba(35, 31, 25, .08);
+}
 .liturgy-verse.highlighted {
   background: color-mix(in srgb, var(--book-accent) 20%, transparent);
   color: var(--text);
@@ -871,14 +933,6 @@ body:not(.book-active) #sidebar {
   color: var(--text);
   letter-spacing: .04em;
 }
-.comm-verse-preview {
-  font-size: .88rem;
-  color: var(--text-faint);
-  line-height: 1.5;
-  margin-top: 5px;
-  font-style: italic;
-}
-
 #comm-close {
   background: rgba(255, 255, 255, .06);
   border: 1px solid var(--border);
@@ -976,6 +1030,11 @@ body:not(.book-active) #sidebar {
   #liturgy-view { padding: 18px 16px 60px; }
   .book-cards { grid-template-columns: repeat(2, 1fr); }
   .liturgy-tab { margin-left: 0; }
+  .liturgy-tab .tab-label { display: none; }
+  .theme-mode-btn {
+    width: 34px;
+    height: 34px;
+  }
   .liturgy-nav {
     grid-template-columns: 44px minmax(0, 1fr) 44px;
     gap: 10px;
