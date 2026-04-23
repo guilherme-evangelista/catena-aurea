@@ -61,19 +61,40 @@ function escHtml(str) {
 function formatCommentary(raw, rangeStr = '') {
   const lines = splitInlineVerseMarkers(raw, rangeStr).split('\n');
   const merged = [];
+  let current = '';
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    if (i === 0 || BLOCK_START_RE.test(line) || line.trim() === '') {
-      merged.push(line);
-    } else {
-      const prev = merged[merged.length - 1];
-      merged[merged.length - 1] = prev + (prev.endsWith('-') ? '' : ' ') + line.trim();
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      const nextNonBlank = findNextNonBlankLine(lines, i + 1);
+      if (!nextNonBlank) break;
+
+      if (current && BLOCK_START_RE.test(nextNonBlank)) {
+        merged.push(current);
+        current = '';
+      }
+      continue;
     }
+
+    if (!current) {
+      current = trimmed;
+      continue;
+    }
+
+    if (BLOCK_START_RE.test(line)) {
+      merged.push(current);
+      current = trimmed;
+      continue;
+    }
+
+    current += (current.endsWith('-') ? '' : ' ') + trimmed;
   }
 
+  if (current) merged.push(current);
+
   return merged
-    .filter(p => p.trim().length > 0)
     .map(p => {
       let h = escHtml(p);
 
@@ -88,6 +109,13 @@ function formatCommentary(raw, rangeStr = '') {
       return `<p>${h}</p>`;
     })
     .join('');
+}
+
+function findNextNonBlankLine(lines, startIndex) {
+  for (let i = startIndex; i < lines.length; i++) {
+    if (lines[i].trim()) return lines[i];
+  }
+  return '';
 }
 
 /**

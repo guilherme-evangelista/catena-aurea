@@ -77,25 +77,70 @@ const CatenaBible = (() => {
     return match ? Number(match[0]) : null;
   }
 
-  function splitGospelText(text, gospelRef) {
+  function parseReferenceVerseSet(ref) {
+    const source = String(ref || '');
+    const commaIndex = source.indexOf(',');
+    if (commaIndex < 0) return null;
+
+    const verseSpec = source.slice(commaIndex + 1);
+    const segments = verseSpec
+      .split(/[.;]/)
+      .map(segment => segment.trim())
+      .filter(Boolean);
+
+    const verses = new Set();
+
+    segments.forEach(segment => {
+      const match = segment.match(/^(\d+[a-c]?)(?:\s*[-\u2013]\s*(\d+[a-c]?))?$/i);
+      if (!match) return;
+
+      const start = parseVerseNumber(match[1]);
+      const end = match[2] ? parseVerseNumber(match[2]) : start;
+      if (!start || !end) return;
+
+      for (let verse = Math.min(start, end); verse <= Math.max(start, end); verse++) {
+        verses.add(verse);
+      }
+    });
+
+    return verses.size ? verses : null;
+  }
+
+  function collectInlineVerseMarkers(text, options = {}) {
     const source = String(text || '');
+    const markerRe = /(^|[\s\n.!?])(\d{1,3}[a-c]?)(?=\s+\S)/g;
     const matches = [];
-    const markerRe = /(^|[\s\n.!?])(\d{1,3}[a-c]?)(?=[^\s.,;:)\]])/g;
+    const allowedVerses = options.allowedVerses instanceof Set ? options.allowedVerses : null;
+    const minVerse = Number.isFinite(options.minVerse) ? options.minVerse : null;
+    const maxVerse = Number.isFinite(options.maxVerse) ? options.maxVerse : null;
     let match;
 
     while ((match = markerRe.exec(source)) !== null) {
       const verse = parseVerseNumber(match[2]);
       if (!verse) continue;
-      if (gospelRef && (verse < gospelRef.startVerse || verse > gospelRef.endVerse)) continue;
+      if (allowedVerses && !allowedVerses.has(verse)) continue;
+      if (minVerse !== null && verse < minVerse) continue;
+      if (maxVerse !== null && verse > maxVerse) continue;
 
       const markerStart = match.index + match[1].length;
       matches.push({
         verse,
         label: match[2],
         markerStart,
+        markerEnd: markerStart + match[2].length,
         contentStart: markerStart + match[2].length,
       });
     }
+
+    return matches;
+  }
+
+  function splitGospelText(text, gospelRef) {
+    const source = String(text || '');
+    const matches = collectInlineVerseMarkers(source, {
+      minVerse: gospelRef?.startVerse,
+      maxVerse: gospelRef?.endVerse,
+    });
 
     if (!matches.length) {
       if (gospelRef?.startVerse) {
@@ -155,6 +200,8 @@ const CatenaBible = (() => {
     parseCatenaRange,
     parseGospelReference,
     parseVerseNumber,
+    parseReferenceVerseSet,
+    collectInlineVerseMarkers,
     splitGospelText,
     expandLeadingRangeQuote,
   };

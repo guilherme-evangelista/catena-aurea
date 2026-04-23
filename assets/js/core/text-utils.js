@@ -13,10 +13,33 @@ const CatenaText = (() => {
     return escHtml(text || '').replace(/\n/g, '<br>');
   }
 
-  function formatVerseMarkers(text) {
-    return escHtml(text || '')
-      .replace(/(^|[\s\n.!?])(\d{1,3}[a-c]?)(?=[^\s.,;:)\]])/g, '$1<sup class="lit-v-num">$2</sup>')
-      .replace(/\n/g, '<br>');
+  function formatVerseMarkers(text, reference = '') {
+    const source = String(text || '');
+    const allowedVerses = typeof CatenaBible !== 'undefined' &&
+      typeof CatenaBible.parseReferenceVerseSet === 'function'
+      ? CatenaBible.parseReferenceVerseSet(reference)
+      : null;
+
+    const markers = typeof CatenaBible !== 'undefined' &&
+      typeof CatenaBible.collectInlineVerseMarkers === 'function'
+      ? CatenaBible.collectInlineVerseMarkers(source, { allowedVerses })
+      : [];
+
+    if (!markers.length) {
+      return formatPlainText(source);
+    }
+
+    let html = '';
+    let cursor = 0;
+
+    markers.forEach(marker => {
+      html += escHtml(source.slice(cursor, marker.markerStart));
+      html += `<sup class="lit-v-num">${escHtml(marker.label)}</sup>`;
+      cursor = marker.markerEnd;
+    });
+
+    html += escHtml(source.slice(cursor));
+    return html.replace(/\n/g, '<br>');
   }
 
   return {
