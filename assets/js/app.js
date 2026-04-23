@@ -933,7 +933,7 @@ function firstReading(readings) {
 function parseGospelReference(ref) {
   if (/[-–]\s*\d+\s*,/.test(ref)) return null;
 
-  const match = String(ref).match(/^\s*([1-3]?\s*[A-Za-zÀ-ÿ]+)\.?\s+(\d+)\s*,\s*(\d+[a-z]?)(?:\s*[-–]\s*(\d+[a-z]?))?/i);
+  const match = String(ref).match(/^\s*([1-3]?\s*[A-Za-zÀ-ÿ]+)\.?\s+(\d+)\s*,\s*(\d+[a-c]?)(?:\s*[-–]\s*(\d+[a-c]?))?/i);
   if (!match) return null;
 
   const bookToken = normalizeBookToken(match[1]);
@@ -997,7 +997,7 @@ function parseVerseNumber(token) {
 function splitGospelText(text, gospelRef) {
   const source = String(text || '');
   const matches = [];
-  const markerRe = /(^|[\s\n.!?])(\d{1,3}[a-z]?)(?=[^\s.,;:)\]])/g;
+  const markerRe = /(^|[\s\n.!?])(\d{1,3}[a-c]?)(?=[^\s.,;:)\]])/g;
   let match;
 
   while ((match = markerRe.exec(source)) !== null) {
@@ -1057,7 +1057,7 @@ function formatPlainText(text) {
  */
 function formatVerseMarkers(text) {
   return escHtml(text || '')
-    .replace(/(^|[\s\n.!?])(\d{1,3}[a-z]?)(?=[^\s.,;:)\]])/g, '$1<sup class="lit-v-num">$2</sup>')
+    .replace(/(^|[\s\n.!?])(\d{1,3}[a-c]?)(?=[^\s.,;:)\]])/g, '$1<sup class="lit-v-num">$2</sup>')
     .replace(/\n/g, '<br>');
 }
 
