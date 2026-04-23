@@ -28,6 +28,23 @@ const bookCache = {};
 const liturgyCache = {};
 /** Daily liturgy API endpoint */
 const LITURGY_API = 'https://liturgia.up.railway.app/v2/';
+/** localStorage key for the visual colour mode */
+const COLOR_MODE_KEY = 'catena-color-mode';
+const COLOR_MODE_BUTTON = {
+  dark: {
+    label: 'Alternar modo claro',
+    icon: `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M12 2.8v2.4M12 18.8v2.4M4.4 4.4l1.7 1.7M17.9 17.9l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.4 19.6l1.7-1.7M17.9 6.1l1.7-1.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>`,
+  },
+  light: {
+    label: 'Alternar modo escuro',
+    icon: `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M19.2 14.6A7.6 7.6 0 0 1 9.4 4.8a7.9 7.9 0 1 0 9.8 9.8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>`,
+  },
+};
 /** Current liturgy UI state */
 const liturgyState = {
   date: toISODate(new Date()),
@@ -49,16 +66,17 @@ const elCommPanel  = document.getElementById('comm-panel');
 const elCommBody   = document.getElementById('comm-body');
 const elCommRef    = document.getElementById('comm-ref');
 const elCommLabel  = document.getElementById('comm-book-label');
-const elCommPreview= document.getElementById('comm-verse-preview');
 const elCommHeader = document.getElementById('comm-header');
 const elBookCards  = document.getElementById('book-cards');
 const elLogoBtn    = document.getElementById('logo-btn');
 const elLiturgyTab = document.getElementById('tab-liturgia');
+const elThemeToggle= document.getElementById('theme-mode-toggle');
 const elChapterToggle = document.getElementById('chapter-toggle');
 const elFavicon    = document.getElementById('favicon');
 
 // ── Initialisation ────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
+  initColorMode();
   injectTabSymbols();
   buildBookCards();
   updateFavicon('mateus');
@@ -74,6 +92,46 @@ function isMobileViewport() {
 function updateMobileControls() {
   elChapterToggle.hidden = !isMobileViewport() || !curBook;
   if (!isMobileViewport()) closeChapterPanel();
+}
+
+/** Apply the saved colour mode, defaulting to the existing dark design. */
+function initColorMode() {
+  setColorMode(getStoredColorMode(), false);
+}
+
+function getStoredColorMode() {
+  try {
+    const stored = localStorage.getItem(COLOR_MODE_KEY);
+    return stored === 'light' ? 'light' : 'dark';
+  } catch {
+    return 'dark';
+  }
+}
+
+function setColorMode(mode, persist = true) {
+  const nextMode = mode === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.colorMode = nextMode;
+
+  if (persist) {
+    try {
+      localStorage.setItem(COLOR_MODE_KEY, nextMode);
+    } catch {
+      // Storage may be unavailable in private browsing or locked-down contexts.
+    }
+  }
+
+  const meta = COLOR_MODE_BUTTON[nextMode];
+  if (elThemeToggle && meta) {
+    const modeIcon = elThemeToggle.querySelector('.mode-icon');
+    elThemeToggle.setAttribute('aria-label', meta.label);
+    elThemeToggle.setAttribute('title', meta.label);
+    if (modeIcon) modeIcon.innerHTML = meta.icon;
+  }
+}
+
+function toggleColorMode() {
+  const currentMode = document.documentElement.dataset.colorMode === 'light' ? 'light' : 'dark';
+  setColorMode(currentMode === 'light' ? 'dark' : 'light');
 }
 
 /** Inject SVG symbols into header tab buttons */
@@ -723,13 +781,14 @@ function showCommentary(vsKey, opts = {}) {
 
   elCommLabel.textContent  = `${m.name} — Catena Áurea`;
   elCommRef.textContent    = block.range;
-  const previewText        = opts.previewText || book.gospel[curChapter]?.[vsKey] || '';
-  elCommPreview.textContent = previewText.length > 180
-    ? previewText.slice(0, 177) + '…'
-    : previewText;
   elCommHeader.style.background =
     `color-mix(in srgb, ${t.bg1} 70%, transparent)`;
-  elCommBody.innerHTML = formatCommentary(block.text);
+  const commentaryText = expandLeadingRangeQuote(
+    block.text,
+    block.range,
+    book.gospel[curChapter] || {}
+  );
+  elCommBody.innerHTML = formatCommentary(commentaryText, block.range);
   elCommBody.scrollTop = 0;
 
   elCommPanel.classList.add('open');
@@ -777,6 +836,9 @@ function bindEvents() {
   });
   if (elLiturgyTab) {
     elLiturgyTab.addEventListener('click', () => selectLiturgy(liturgyState.date));
+  }
+  if (elThemeToggle) {
+    elThemeToggle.addEventListener('click', toggleColorMode);
   }
 
   // Book cards (event delegation)
@@ -856,9 +918,60 @@ function bindEvents() {
  * @param {HTMLElement} verseEl
  */
 function showLiturgyCommentary(verseEl) {
-  const verse = verseEl.dataset.verse;
-  const previewText = liturgyState.verseTexts[verse] || verseEl.textContent.trim();
-  showCommentary(verseEl.dataset.vskey, { previewText });
+  showCommentary(verseEl.dataset.vskey);
+}
+
+/**
+ * Replace an opening "3-6." quote with individual verse lines.
+ * Older source blocks sometimes compress the whole Gospel range into one
+ * paragraph, but the commentary panel should display verses one by one.
+ * @param {string} raw
+ * @param {string} rangeStr
+ * @param {object} verses
+ * @returns {string}
+ */
+function expandLeadingRangeQuote(raw, rangeStr, verses) {
+  const range = parseCatenaRange(rangeStr);
+  if (!range || range.start === range.end) return raw;
+
+  const startRe = new RegExp(`^\\s*${range.start}\\s*[–\\-]\\s*${range.end}\\.\\s*`);
+  if (!startRe.test(raw)) return raw;
+
+  const firstFather = findFirstFatherLineIndex(raw);
+  const suffix = firstFather >= 0 ? raw.slice(firstFather) : '';
+  const replacement = [];
+
+  for (let verse = range.start; verse <= range.end; verse++) {
+    const text = verses[String(verse)];
+    if (text) replacement.push(`${verse}. ${text}`);
+  }
+
+  if (!replacement.length) return raw;
+  return `${replacement.join('\n')}${suffix}`;
+}
+
+/**
+ * Find the first paragraph that begins with a patristic author label.
+ * @param {string} raw
+ * @returns {number}
+ */
+function findFirstFatherLineIndex(raw) {
+  const match = String(raw).match(/\n\s*[A-ZÁÉÍÓÚÂÊÎÔÛÃÕÀÇ-]{3,}(?:[\s-][A-ZÁÉÍÓÚÂÊÎÔÛÃÕÀÇ-]+)*\s*\./);
+  return match ? match.index : -1;
+}
+
+/**
+ * Parse Catena ranges such as "1:3-6" or "1:3–6".
+ * @param {string} rangeStr
+ * @returns {{start: number, end: number}|null}
+ */
+function parseCatenaRange(rangeStr) {
+  const match = String(rangeStr || '').match(/\d+:(\d+)(?:[–\-](\d+))?/);
+  if (!match) return null;
+
+  const start = Number(match[1]);
+  const end = match[2] ? Number(match[2]) : start;
+  return { start, end };
 }
 
 /** Bind controls inside the freshly rendered liturgy view. */
