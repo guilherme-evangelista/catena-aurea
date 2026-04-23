@@ -108,7 +108,7 @@ const CatenaBible = (() => {
 
   function collectInlineVerseMarkers(text, options = {}) {
     const source = String(text || '');
-    const markerRe = /(^|[\s\n.!?])(\d{1,3}[a-c]?)(?=\s+\S)/g;
+    const markerRe = /(^|[\s\n.!?;:,)"'“”‘’»\]])(\d{1,3}[a-c]?)(?=(?:\s+|["'“”‘’«»([{])?\S)/g;
     const matches = [];
     const allowedVerses = options.allowedVerses instanceof Set ? options.allowedVerses : null;
     const minVerse = Number.isFinite(options.minVerse) ? options.minVerse : null;
