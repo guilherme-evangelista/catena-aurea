@@ -54,7 +54,11 @@ catena-aurea/
 │   │   ├── symbols.js          ← SVGs dos quatro evangelistas
 │   │   ├── themes.js           ← Paletas de cor por Evangelho + metadados
 │   │   ├── commentary.js       ← Parser/formatter do texto patrístico
-│   │   └── app.js              ← Controlador principal (navegação, renderização)
+│   │   ├── app.js              ← Bootstrap e orquestração da aplicação
+│   │   ├── core/               ← Estado, DOM e utilitários de texto/data/Bíblia
+│   │   ├── services/           ← Carregamento lazy dos dados e API da liturgia
+│   │   ├── renderers/          ← Renderização de cards, capítulos e liturgia
+│   │   └── ui/                 ← Tema, sidebar, comentários e painel redimensionável
 │   │
 │   └── images/
 │       ├── cover-mateus.jpg    ← Capa Vol. I (São Mateus)
@@ -81,7 +85,7 @@ catena-aurea/
 | Estilos | CSS puro (custom properties, grid, `color-mix`) |
 | Scripts | JavaScript vanilla (ES2022, sem frameworks) |
 | Fontes | Google Fonts — Cinzel, Lora, Inter |
-| Dados | JS estático, carregado via `fetch()` |
+| Dados | JS estático, carregado sob demanda por injeção de `<script>` |
 | Hospedagem | GitHub Pages (estático, gratuito) |
 
 Sem dependências de terceiros. Sem bundler. Sem build step.

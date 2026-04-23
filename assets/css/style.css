@@ -390,6 +390,56 @@ body:not(.book-active) #sidebar {
   text-transform: uppercase;
 }
 
+.welcome-liturgy-link {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--book-gold) 48%, transparent);
+  background: color-mix(in srgb, var(--book-bg1) 20%, transparent);
+  color: var(--book-gold);
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-family: 'Inter', sans-serif;
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, color .2s, transform .2s;
+}
+
+.welcome-liturgy-link:hover,
+.welcome-liturgy-link:focus-visible {
+  border-color: var(--book-gold);
+  background: color-mix(in srgb, var(--book-bg1) 32%, transparent);
+  color: var(--text);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+:root[data-color-mode="light"] .welcome-liturgy-link {
+  border-color: color-mix(in srgb, var(--book-accent) 36%, var(--border2));
+  background: color-mix(in srgb, var(--surface2) 82%, white);
+  color: var(--text);
+  box-shadow: 0 1px 0 rgba(45, 37, 28, .06);
+}
+
+:root[data-color-mode="light"] .welcome-liturgy-link:hover,
+:root[data-color-mode="light"] .welcome-liturgy-link:focus-visible {
+  border-color: color-mix(in srgb, var(--book-accent) 58%, var(--border2));
+  background: color-mix(in srgb, var(--book-accent) 12%, var(--surface));
+  color: var(--text);
+}
+
+.welcome-liturgy-icon {
+  font-size: .9rem;
+  line-height: 1;
+}
+
 .book-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -736,6 +786,62 @@ body:not(.book-active) #sidebar {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 16px;
+}
+.liturgy-collapse-summary {
+  margin-bottom: 0;
+  cursor: pointer;
+  list-style: none;
+}
+.liturgy-collapse-summary::-webkit-details-marker {
+  display: none;
+}
+.liturgy-collapse-summary::marker {
+  content: '';
+}
+.liturgy-collapsible[open] > .liturgy-collapse-summary {
+  margin-bottom: 16px;
+}
+.liturgy-collapse-icon {
+  width: 34px;
+  height: 34px;
+  margin-top: 2px;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--book-accent) 52%, transparent);
+  border-radius: 999px;
+  position: relative;
+  color: var(--book-accent);
+  transition: border-color .2s, background .2s, transform .2s;
+}
+.liturgy-collapse-icon::before,
+.liturgy-collapse-icon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 13px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  transition: transform .2s, opacity .2s;
+}
+.liturgy-collapse-icon::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.liturgy-collapse-summary:hover .liturgy-collapse-icon,
+.liturgy-collapse-summary:focus-visible .liturgy-collapse-icon {
+  border-color: var(--book-accent);
+  background: color-mix(in srgb, var(--book-accent) 10%, transparent);
+}
+.liturgy-collapse-summary:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--book-accent) 55%, transparent);
+  outline-offset: 6px;
+}
+.liturgy-collapsible[open] .liturgy-collapse-icon {
+  transform: rotate(180deg);
+}
+.liturgy-collapsible[open] .liturgy-collapse-icon::after {
+  opacity: 0;
 }
 .liturgy-section h2 {
   margin-top: 5px;
