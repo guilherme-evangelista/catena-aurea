@@ -146,7 +146,7 @@ const CatenaLiturgyRenderer = (() => {
             </div>
           </div>
           ${isPsalm && reading.refrao ? `<p class="liturgy-psalm-response">${CatenaText.formatPlainText(reading.refrao)}</p>` : ''}
-          <div class="liturgy-text">${CatenaText.formatVerseMarkers(readingText)}</div>
+          <div class="liturgy-text">${CatenaText.formatVerseMarkers(readingText, reading.referencia)}</div>
         </section>`;
     }).join('');
   }
@@ -167,7 +167,7 @@ const CatenaLiturgyRenderer = (() => {
           </div>
         </div>
         <div class="liturgy-gospel-text">
-          ${renderGospelText(gospelText, gospelRef)}
+          ${renderGospelText(gospelText, gospelRef, gospel.referencia)}
         </div>
         ${hasCatena ? `
           <p class="liturgy-hint">Catena &Aacute;urea dispon&iacute;vel para esta per&iacute;cope do Evangelho.</p>
@@ -177,10 +177,10 @@ const CatenaLiturgyRenderer = (() => {
       </section>`;
   }
 
-  function renderGospelText(text, gospelRef) {
+  function renderGospelText(text, gospelRef, reference = '') {
     const parts = CatenaBible.splitGospelText(text, gospelRef);
     if (!parts.verses.length) {
-      return `<p>${CatenaText.formatVerseMarkers(text)}</p>`;
+      return `<p>${CatenaText.formatVerseMarkers(text, reference)}</p>`;
     }
 
     const book = gospelRef ? CatenaDataService.getBook(gospelRef.bookKey) : null;
