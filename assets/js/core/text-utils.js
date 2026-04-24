@@ -19,10 +19,18 @@ const CatenaText = (() => {
       typeof CatenaBible.parseReferenceVerseSet === 'function'
       ? CatenaBible.parseReferenceVerseSet(reference)
       : null;
+    const allowedLabels = typeof CatenaBible !== 'undefined' &&
+      typeof CatenaBible.parseReferenceVerseLabelSet === 'function'
+      ? CatenaBible.parseReferenceVerseLabelSet(reference)
+      : null;
 
     const markers = typeof CatenaBible !== 'undefined' &&
       typeof CatenaBible.collectInlineVerseMarkers === 'function'
-      ? CatenaBible.collectInlineVerseMarkers(source, { allowedVerses })
+      ? CatenaBible.collectInlineVerseMarkers(source, {
+        allowedVerses,
+        allowedLabels,
+        requireKnownSuffix: !!String(reference || '').trim(),
+      })
       : [];
 
     if (!markers.length) {
@@ -35,6 +43,9 @@ const CatenaText = (() => {
     markers.forEach(marker => {
       html += escHtml(source.slice(cursor, marker.markerStart));
       html += `<sup class="lit-v-num">${escHtml(marker.label)}</sup>`;
+      if (source[marker.markerEnd] && !/\s/.test(source[marker.markerEnd])) {
+        html += ' ';
+      }
       cursor = marker.markerEnd;
     });
 

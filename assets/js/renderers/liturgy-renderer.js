@@ -204,7 +204,7 @@ const CatenaLiturgyRenderer = (() => {
         : '';
 
       return `<span class="${cls}" data-verse="${CatenaText.escHtml(verseKey)}"${interactiveAttrs}>
-        <sup class="lit-v-num">${CatenaText.escHtml(part.label)}</sup>${CatenaText.formatPlainText(part.text)}
+        <sup class="lit-v-num">${CatenaText.escHtml(part.label)}</sup> ${CatenaText.formatPlainText(part.text)}
       </span>`;
     }).join(' ');
 

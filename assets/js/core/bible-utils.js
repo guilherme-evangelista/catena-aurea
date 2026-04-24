@@ -106,17 +106,69 @@ const CatenaBible = (() => {
     return verses.size ? verses : null;
   }
 
+  function parseReferenceVerseLabelSet(ref) {
+    const source = String(ref || '');
+    const commaIndex = source.indexOf(',');
+    if (commaIndex < 0) return null;
+
+    const verseSpec = source.slice(commaIndex + 1);
+    const segments = verseSpec
+      .split(/[.;]/)
+      .map(segment => segment.trim())
+      .filter(Boolean);
+
+    const labels = new Set();
+
+    segments.forEach(segment => {
+      const match = segment.match(/^(\d+[a-c]?)(?:\s*[-\u2013]\s*(\d+[a-c]?))?$/i);
+      if (!match) return;
+
+      const startLabel = match[1].toLowerCase();
+      const endLabel = match[2] ? match[2].toLowerCase() : startLabel;
+      const start = parseVerseNumber(startLabel);
+      const end = parseVerseNumber(endLabel);
+      if (!start || !end) return;
+
+      labels.add(startLabel);
+      if (endLabel !== startLabel) labels.add(endLabel);
+
+      if (!/[a-c]$/i.test(startLabel) && !/[a-c]$/i.test(endLabel)) {
+        for (let verse = Math.min(start, end); verse <= Math.max(start, end); verse++) {
+          labels.add(String(verse));
+        }
+      }
+    });
+
+    return labels.size ? labels : null;
+  }
+
   function collectInlineVerseMarkers(text, options = {}) {
     const source = String(text || '');
-    const markerRe = /(^|[\s\n.!?;:,)"'“”‘’»\]])(\d{1,3}[a-c]?)(?=(?:\s+|["'“”‘’«»([{])?\S)/g;
+    const markerRe = /(^|[\s\n.!?;:,)"'“”‘’»\]])(\d{1,3}(?:[a-cA-C](?=$|[\s\n.!?;:,)"'“”‘’»\]]|["'“‘«([{]))?)(?=$|\s+|["'“”‘’«»([{]|[A-Za-z\u00C0-\u00FF])/g;
     const matches = [];
     const allowedVerses = options.allowedVerses instanceof Set ? options.allowedVerses : null;
+    const allowedLabels = options.allowedLabels instanceof Set ? options.allowedLabels : null;
+    const requireKnownSuffix = options.requireKnownSuffix === true;
     const minVerse = Number.isFinite(options.minVerse) ? options.minVerse : null;
     const maxVerse = Number.isFinite(options.maxVerse) ? options.maxVerse : null;
     let match;
 
     while ((match = markerRe.exec(source)) !== null) {
-      const verse = parseVerseNumber(match[2]);
+      let label = match[2];
+      let markerEnd = match.index + match[1].length + label.length;
+      if (requireKnownSuffix && /[a-c]$/i.test(label) && !allowedLabels?.has(label.toLowerCase())) {
+        label = label.slice(0, -1);
+        markerEnd -= 1;
+      }
+      if (requireKnownSuffix && !/[a-c]$/i.test(label) && allowedLabels) {
+        const suffix = findDetachedVerseSuffix(source, markerEnd, label, allowedLabels);
+        if (suffix) {
+          label += suffix.letter;
+          markerEnd = suffix.end;
+        }
+      }
+
+      const verse = parseVerseNumber(label);
       if (!verse) continue;
       if (allowedVerses && !allowedVerses.has(verse)) continue;
       if (minVerse !== null && verse < minVerse) continue;
@@ -125,14 +177,27 @@ const CatenaBible = (() => {
       const markerStart = match.index + match[1].length;
       matches.push({
         verse,
-        label: match[2],
+        label,
         markerStart,
-        markerEnd: markerStart + match[2].length,
-        contentStart: markerStart + match[2].length,
+        markerEnd,
+        contentStart: markerEnd,
       });
     }
 
     return matches;
+  }
+
+  function findDetachedVerseSuffix(source, startIndex, label, allowedLabels) {
+    const match = source.slice(startIndex).match(/^\s*([a-cA-C])(?=\S)/);
+    if (!match) return null;
+
+    const combined = `${label}${match[1]}`.toLowerCase();
+    if (!allowedLabels.has(combined)) return null;
+
+    return {
+      letter: match[1].toUpperCase(),
+      end: startIndex + match[0].length,
+    };
   }
 
   function splitGospelText(text, gospelRef) {
@@ -201,6 +266,7 @@ const CatenaBible = (() => {
     parseGospelReference,
     parseVerseNumber,
     parseReferenceVerseSet,
+    parseReferenceVerseLabelSet,
     collectInlineVerseMarkers,
     splitGospelText,
     expandLeadingRangeQuote,
