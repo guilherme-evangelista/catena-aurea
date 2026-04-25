@@ -178,7 +178,7 @@ const CatenaLiturgyRenderer = (() => {
   }
 
   function renderGospelText(text, gospelRef, reference = '') {
-    const parts = CatenaBible.splitGospelText(text, gospelRef);
+    const parts = CatenaBible.splitGospelText(text, gospelRef, reference);
     if (!parts.verses.length) {
       return `<p>${CatenaText.formatVerseMarkers(text, reference)}</p>`;
     }
