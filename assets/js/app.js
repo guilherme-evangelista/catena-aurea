@@ -22,7 +22,7 @@ const CatenaApp = (() => {
     CatenaChapterSidebar.hideToggle();
     CatenaDOM.setActiveBookTab(null);
     CatenaDOM.showPanel('welcome');
-    CatenaCommentaryPanel.close();
+    CatenaCommentaryPanel.close({ clearHighlight: true });
     CatenaAppearance.updateFavicon(lastBookKey);
     CatenaDOM.setLogoSymbol(lastBookKey);
     CatenaDOM.refs.main.scrollTo({ top: 0, behavior: 'smooth' });
@@ -61,7 +61,7 @@ const CatenaApp = (() => {
       button.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    CatenaCommentaryPanel.close();
+    CatenaCommentaryPanel.close({ clearHighlight: true });
     CatenaChapterSidebar.close();
 
     const book = CatenaDataService.getBook(CatenaState.currentBook);
@@ -79,7 +79,7 @@ const CatenaApp = (() => {
     CatenaDOM.refs.sidebarLabel.textContent = 'Liturgia';
     CatenaDOM.refs.chapterList.innerHTML = '';
     CatenaChapterSidebar.hideToggle();
-    CatenaCommentaryPanel.close();
+    CatenaCommentaryPanel.close({ clearHighlight: true });
     CatenaDOM.showPanel('loading');
 
     try {
@@ -193,6 +193,10 @@ const CatenaApp = (() => {
         CatenaCommentaryPanel.open(row.dataset.vskey);
       }
     });
+
+    if (refs.commMaximize) {
+      refs.commMaximize.addEventListener('click', CatenaCommentaryPanel.toggleMaximized);
+    }
 
     refs.commClose.addEventListener('click', CatenaCommentaryPanel.close);
 
