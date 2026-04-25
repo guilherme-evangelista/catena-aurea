@@ -34,17 +34,43 @@ const CatenaCommentaryPanel = (() => {
     open(verseEl.dataset.vskey);
   }
 
-  function close() {
+  function close(options = {}) {
     const refs = CatenaDOM.refs;
     refs.commPanel.classList.remove('open');
     refs.commPanel.setAttribute('aria-hidden', 'true');
+    setMaximized(false);
+
+    if (options.clearHighlight === true) {
+      clearHighlights();
+    }
+  }
+
+  function toggleMaximized() {
+    const panel = CatenaDOM.refs.commPanel;
+    setMaximized(!panel.classList.contains('is-maximized'));
+  }
+
+  function setMaximized(isMaximized) {
+    const refs = CatenaDOM.refs;
+    refs.commPanel.classList.toggle('is-maximized', isMaximized);
+
+    if (!refs.commMaximize) return;
+
+    refs.commMaximize.setAttribute('aria-pressed', String(isMaximized));
+    refs.commMaximize.setAttribute(
+      'aria-label',
+      isMaximized ? 'Restaurar painel de comentários' : 'Maximizar comentários'
+    );
+    refs.commMaximize.title = isMaximized ? 'Restaurar painel' : 'Maximizar comentários';
+  }
+
+  function clearHighlights() {
     document.querySelectorAll('.verse-row.highlighted, .liturgy-verse.highlighted')
       .forEach(row => row.classList.remove('highlighted'));
   }
 
   function highlightVerses(rangeStr) {
-    document.querySelectorAll('.verse-row.highlighted, .liturgy-verse.highlighted')
-      .forEach(row => row.classList.remove('highlighted'));
+    clearHighlights();
 
     const range = CatenaBible.parseCatenaRange(rangeStr);
     if (!range) return;
@@ -69,5 +95,7 @@ const CatenaCommentaryPanel = (() => {
     open,
     openFromVerse,
     close,
+    toggleMaximized,
+    clearHighlights,
   };
 })();
