@@ -200,11 +200,14 @@ const CatenaBible = (() => {
     };
   }
 
-  function splitGospelText(text, gospelRef) {
+  function splitGospelText(text, gospelRef, reference = '') {
     const source = String(text || '');
+    const allowedLabels = parseReferenceVerseLabelSet(reference);
     const matches = collectInlineVerseMarkers(source, {
+      allowedLabels,
       minVerse: gospelRef?.startVerse,
       maxVerse: gospelRef?.endVerse,
+      requireKnownSuffix: !!String(reference || '').trim(),
     });
 
     if (!matches.length) {

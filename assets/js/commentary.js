@@ -12,14 +12,6 @@
 const FATHER_NAME_CHARS = 'A-Z\\u00C0-\\u00D6\\u00D8-\\u00DE\\-';
 
 /**
- * Regex that identifies the start of a new semantic paragraph:
- * either a Father's name in ALL-CAPS followed by a period,
- * or a verse number (digit + period) at the start of a line.
- */
-const BLOCK_START_RE = new RegExp(
-  `^\\s*(?:[${FATHER_NAME_CHARS}]{3,}(?:[\\s\\-][${FATHER_NAME_CHARS}]+)*\\s*\\.|\\d+\\.)\\s`
-);
-
 /** Regex matching a Father's name at the very start of a paragraph. */
 const FATHER_RE = new RegExp(
   `^\\s*([${FATHER_NAME_CHARS}]{3,}(?:[\\s\\-][${FATHER_NAME_CHARS}]+)*)\\s*\\.\\s*`
@@ -59,6 +51,7 @@ function escHtml(str) {
  * @returns {string} - HTML string ready for innerHTML.
  */
 function formatCommentary(raw, rangeStr = '') {
+  const verseNums = getRangeVerseNumbers(rangeStr);
   const lines = splitInlineVerseMarkers(raw, rangeStr).split('\n');
   const merged = [];
   let current = '';
@@ -71,7 +64,7 @@ function formatCommentary(raw, rangeStr = '') {
       const nextNonBlank = findNextNonBlankLine(lines, i + 1);
       if (!nextNonBlank) break;
 
-      if (current && BLOCK_START_RE.test(nextNonBlank)) {
+      if (current && isBlockStart(nextNonBlank, verseNums)) {
         merged.push(current);
         current = '';
       }
@@ -83,7 +76,7 @@ function formatCommentary(raw, rangeStr = '') {
       continue;
     }
 
-    if (BLOCK_START_RE.test(line)) {
+    if (isBlockStart(line, verseNums)) {
       merged.push(current);
       current = trimmed;
       continue;
@@ -102,13 +95,27 @@ function formatCommentary(raw, rangeStr = '') {
         `<strong class="father">${escHtml(name)}</strong> `
       );
 
-      h = h.replace(VERSE_NUM_RE, (_, n) =>
-        `<span class="vs-num">${n}.</span> `
-      );
+      h = h.replace(VERSE_NUM_RE, (match, n) => {
+        const value = Number(n);
+        return verseNums.includes(value) && startsRangeVerse(p, verseNums)
+          ? `<span class="vs-num">${n}.</span> `
+          : match;
+      });
 
       return `<p>${h}</p>`;
     })
     .join('');
+}
+
+function isBlockStart(line, verseNums) {
+  return FATHER_RE.test(line) || startsRangeVerse(line, verseNums);
+}
+
+function startsRangeVerse(line, verseNums) {
+  const match = String(line || '').match(/^\s*(\d+)\.\s+(\S)/);
+  if (!match || !verseNums.includes(Number(match[1]))) return false;
+
+  return /^[A-Z\u00C0-\u00D6\u00D8-\u00DE"'“‘«([]/.test(match[2]);
 }
 
 function findNextNonBlankLine(lines, startIndex) {

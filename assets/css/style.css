@@ -1311,8 +1311,8 @@ body:not(.book-active) #sidebar {
 
   /* ── Header: icon only for logo, tabs icon-only ── */
   #header {
-    padding: max(0px, env(safe-area-inset-top)) 12px 0 12px;
-    gap: 8px;
+    padding: max(0px, env(safe-area-inset-top)) 8px 0 8px;
+    gap: 4px;
     overflow: hidden;
     flex-wrap: nowrap;
     min-height: var(--hdr-h);
@@ -1361,10 +1361,27 @@ body:not(.book-active) #sidebar {
   #book-tabs .tab-symbol { display: none; }
   .tab-symbol { width: 16px; height: 16px; }
   .liturgy-tab {
-    margin-left: 6px;
+    margin-left: 2px;
     justify-content: center;
     gap: 0;
-    padding-inline: 8px;
+    width: 36px;
+    min-width: 36px;
+    height: 34px;
+    min-height: 34px;
+    padding-inline: 0;
+  }
+  .theme-mode-btn {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    min-height: 32px;
+    padding: 0;
+    border-radius: 8px;
+  }
+  .theme-mode-btn .mode-icon,
+  .theme-mode-btn svg {
+    width: 15px;
+    height: 15px;
   }
 
   /* ── Sidebar: hidden by default on mobile; open via chapter toggle ── */
