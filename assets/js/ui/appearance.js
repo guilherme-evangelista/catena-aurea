@@ -2,6 +2,7 @@
 
 const CatenaAppearance = (() => {
   const COLOR_MODE_KEY = 'catena-color-mode';
+  const FAVICON_VERSION = '20260425-symbol-colors';
   const COLOR_MODE_BUTTON = {
     dark: {
       label: 'Alternar modo claro',
@@ -59,16 +60,8 @@ const CatenaAppearance = (() => {
   }
 
   function updateFavicon(bookKey) {
-    const theme = BOOK_THEMES[bookKey] || BOOK_THEMES.mateus;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <rect width="64" height="64" fill="#0d0d0f"/>
-      <circle cx="32" cy="32" r="24" fill="none" stroke="${theme.accent}" stroke-width="2"/>
-      <g transform="translate(32, 32)">
-        <path d="M 0,-12 L 12,0 L 0,12 L -12,0 Z" fill="${theme.accent}"/>
-      </g>
-    </svg>`;
-
-    CatenaDOM.refs.favicon.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    const key = SYMBOL_FAVICON_PATHS[bookKey] ? bookKey : 'mateus';
+    CatenaDOM.refs.favicon.href = `${SYMBOL_FAVICON_PATHS[key]}?v=${FAVICON_VERSION}`;
   }
 
   return {

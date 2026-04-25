@@ -18,6 +18,7 @@
   --book-bg2:    #243662;
   --book-accent: #7a9fe0;
   --book-gold:   #d4b86a;
+  --book-symbol: #7a9fe0;
   --book-glow:   rgba(106, 143, 216, .18);
 
   --hdr-h:   64px;
@@ -126,6 +127,9 @@ html, body {
 .chapter-toggle:hover {
   background: rgba(255, 255, 255, .1);
 }
+.chapter-toggle[hidden] {
+  display: none !important;
+}
 
 @media (min-width: 601px) {
   .chapter-toggle { display: none; }
@@ -140,10 +144,23 @@ html, body {
   align-items: center;
   justify-content: center;
   color: var(--book-accent);
-  font-size: .85rem;
+  padding: 2px;
   flex-shrink: 0;
   transition: all .4s;
   box-shadow: 0 0 16px var(--book-glow);
+}
+
+.logo-symbol {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: .92;
+}
+.logo-symbol .evangelist-symbol {
+  width: 100%;
+  height: 100%;
+  transform: scale(1.1);
+  transform-origin: center;
 }
 
 .logo-text {
@@ -219,7 +236,7 @@ html, body {
 }
 .book-tab:hover { color: var(--text); }
 .book-tab:hover::before { opacity: 1; }
-.book-tab.active { color: var(--book-gold); font-weight: 600; }
+.book-tab.active { color: var(--book-symbol); font-weight: 600; }
 .book-tab.active::before { opacity: 1; }
 .book-tab.active::after {
   content: '';
@@ -237,6 +254,25 @@ html, body {
   color: currentColor;
   opacity: .7;
   flex-shrink: 0;
+}
+.tab-symbol svg,
+.book-card-symbol svg,
+.chapter-header-icon svg,
+.evangelist-symbol {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.evangelist-symbol {
+  background: currentColor;
+  -webkit-mask-image: var(--symbol-src);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-image: var(--symbol-src);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
 }
 .book-tab.active .tab-symbol { opacity: 1; }
 
@@ -332,7 +368,7 @@ body:not(.book-active) #sidebar {
 }
 .ch-btn:hover { color: var(--text); background: rgba(255, 255, 255, .04); }
 .ch-btn.active {
-  color: var(--book-gold);
+  color: var(--book-symbol);
   font-weight: 600;
   background: rgba(255, 255, 255, .05);
   border-left-color: var(--book-accent);
@@ -495,7 +531,7 @@ body:not(.book-active) #sidebar {
   width: 28px;
   height: 28px;
   margin-bottom: 2px;
-  filter: drop-shadow(0 0 8px currentColor);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, currentColor 55%, transparent));
 }
 
 .book-card-vol {
@@ -546,7 +582,7 @@ body:not(.book-active) #sidebar {
   height: 40px;
   color: var(--book-accent);
   flex-shrink: 0;
-  filter: drop-shadow(0 0 10px var(--book-glow));
+  filter: drop-shadow(0 0 8px var(--book-glow));
 }
 
 .chapter-header-text .book-name {
@@ -627,10 +663,10 @@ body:not(.book-active) #sidebar {
   font-family: 'Cinzel', serif;
   font-size: 4rem;
   line-height: .82;
-  color: var(--book-gold);
+  color: var(--book-symbol);
   margin-right: 6px;
   margin-top: 6px;
-  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--book-gold) 40%, transparent));
+  filter: drop-shadow(0 0 16px color-mix(in srgb, var(--book-symbol) 40%, transparent));
 }
 
 .chapter-ornament {
@@ -1231,6 +1267,12 @@ body:not(.book-active) #sidebar {
     border-radius: 6px;
   }
   .tab-symbol { width: 16px; height: 16px; }
+  .liturgy-tab {
+    margin-left: 6px;
+    justify-content: center;
+    gap: 0;
+    padding-inline: 8px;
+  }
 
   /* ── Sidebar: hidden by default on mobile; open via chapter toggle ── */
   #sidebar {

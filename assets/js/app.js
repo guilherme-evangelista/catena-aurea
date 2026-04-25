@@ -1,12 +1,15 @@
 'use strict';
 
 const CatenaApp = (() => {
+  let lastBookKey = 'mateus';
+
   function init() {
     CatenaDOM.init();
     CatenaAppearance.initColorMode();
     CatenaDOM.injectTabSymbols();
     CatenaHomeRenderer.renderBookCards();
     CatenaAppearance.updateFavicon('mateus');
+    CatenaDOM.setLogoSymbol('mateus');
     CatenaChapterSidebar.hideToggle();
     bindEvents();
     CatenaChapterSidebar.updateMobileControls();
@@ -14,21 +17,25 @@ const CatenaApp = (() => {
 
   function goHome() {
     CatenaState.resetBookSelection();
+    applyTheme(lastBookKey);
     document.body.classList.remove('book-active', 'liturgy-active', 'sidebar-open');
     CatenaChapterSidebar.hideToggle();
     CatenaDOM.setActiveBookTab(null);
     CatenaDOM.showPanel('welcome');
     CatenaCommentaryPanel.close();
-    CatenaAppearance.updateFavicon('mateus');
+    CatenaAppearance.updateFavicon(lastBookKey);
+    CatenaDOM.setLogoSymbol(lastBookKey);
     CatenaDOM.refs.main.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function selectBook(bookKey) {
+    lastBookKey = bookKey;
     CatenaState.currentBook = bookKey;
     CatenaState.currentChapter = null;
 
     applyTheme(bookKey);
     CatenaAppearance.updateFavicon(bookKey);
+    CatenaDOM.setLogoSymbol(bookKey);
     document.body.classList.add('book-active');
     document.body.classList.remove('liturgy-active');
     CatenaChapterSidebar.updateMobileControls();
@@ -86,8 +93,15 @@ const CatenaApp = (() => {
       if (gospelRef) {
         CatenaState.currentBook = gospelRef.bookKey;
         CatenaState.currentChapter = String(gospelRef.chapter);
+        lastBookKey = gospelRef.bookKey;
         applyTheme(gospelRef.bookKey);
+        CatenaAppearance.updateFavicon(gospelRef.bookKey);
+        CatenaDOM.setLogoSymbol(gospelRef.bookKey);
         await CatenaDataService.loadBook(gospelRef.bookKey);
+      } else {
+        applyTheme(lastBookKey);
+        CatenaAppearance.updateFavicon(lastBookKey);
+        CatenaDOM.setLogoSymbol(lastBookKey);
       }
 
       CatenaLiturgyRenderer.render(data, gospelRef, { onSelectDate: selectLiturgy });
