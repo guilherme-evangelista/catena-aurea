@@ -24,6 +24,7 @@ const CatenaDOM = (() => {
       bookCards: document.getElementById('book-cards'),
       welcomeLiturgy: document.getElementById('welcome-liturgia'),
       logoButton: document.getElementById('logo-btn'),
+      logoMark: document.getElementById('logo-mark'),
       liturgyTab: document.getElementById('tab-liturgia'),
       themeToggle: document.getElementById('theme-mode-toggle'),
       chapterToggle: document.getElementById('chapter-toggle'),
@@ -62,6 +63,16 @@ const CatenaDOM = (() => {
       const el = document.getElementById(`sym-${key}`);
       if (el) el.innerHTML = SYMBOLS[key];
     });
+
+    setLogoSymbol('mateus');
+  }
+
+  function setLogoSymbol(bookKey) {
+    if (!refs.logoMark) return;
+    const key = SYMBOLS[bookKey] ? bookKey : 'mateus';
+    const theme = BOOK_THEMES[key] || BOOK_THEMES.mateus;
+    const color = theme.symbol || theme.gold;
+    refs.logoMark.innerHTML = `<span class="logo-symbol" style="color:${color}" aria-hidden="true">${SYMBOLS[key]}</span>`;
   }
 
   return {
@@ -71,5 +82,6 @@ const CatenaDOM = (() => {
     setActiveBookTab,
     setActiveLiturgyTab,
     injectTabSymbols,
+    setLogoSymbol,
   };
 })();

@@ -8,6 +8,7 @@ const CatenaHomeRenderer = (() => {
       const meta = BOOK_META[key];
       const theme = BOOK_THEMES[key];
       const symbol = SYMBOLS[key];
+      const symbolColor = theme.symbol || theme.gold;
       const delay = index * 80;
       const imgPath = `assets/images/cover-${key}.jpg`;
 
@@ -23,7 +24,7 @@ const CatenaHomeRenderer = (() => {
           <div class="book-card-overlay"
                style="background:linear-gradient(to top,rgba(0,0,0,.95) 0%,rgba(0,0,0,.5) 45%,rgba(0,0,0,.1) 100%)"></div>
           <div class="book-card-body">
-            <div class="book-card-symbol" style="color:${theme.gold}">${symbol}</div>
+            <div class="book-card-symbol" style="color:${symbolColor}">${symbol}</div>
             <div class="book-card-vol" style="color:${theme.gold};opacity:.7">${CatenaText.escHtml(meta.vol)}</div>
             <div class="book-card-name">${CatenaText.escHtml(meta.name)}</div>
             <div class="book-card-cta">Ler coment&aacute;rios &rarr;</div>
