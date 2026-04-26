@@ -428,9 +428,9 @@ body:not(.book-active) #sidebar {
 
 .welcome-liturgy-link {
   appearance: none;
-  border: 1px solid color-mix(in srgb, var(--book-gold) 48%, transparent);
-  background: color-mix(in srgb, var(--book-bg1) 20%, transparent);
-  color: var(--book-gold);
+  border: 1px solid color-mix(in srgb, var(--book-accent) 48%, transparent);
+  background: color-mix(in srgb, var(--book-accent) 10%, transparent);
+  color: var(--book-accent);
   min-height: 42px;
   padding: 0 18px;
   border-radius: 999px;
@@ -450,8 +450,8 @@ body:not(.book-active) #sidebar {
 
 .welcome-liturgy-link:hover,
 .welcome-liturgy-link:focus-visible {
-  border-color: var(--book-gold);
-  background: color-mix(in srgb, var(--book-bg1) 32%, transparent);
+  border-color: var(--book-accent);
+  background: color-mix(in srgb, var(--book-accent) 16%, transparent);
   color: var(--text);
   transform: translateY(-1px);
   outline: none;
@@ -460,7 +460,7 @@ body:not(.book-active) #sidebar {
 :root[data-color-mode="light"] .welcome-liturgy-link {
   border-color: color-mix(in srgb, var(--book-accent) 36%, var(--border2));
   background: color-mix(in srgb, var(--surface2) 82%, white);
-  color: var(--text);
+  color: var(--book-accent);
   box-shadow: 0 1px 0 rgba(45, 37, 28, .06);
 }
 
@@ -1201,12 +1201,12 @@ body:not(.book-active) #sidebar {
   font-weight: 600;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--book-gold);
+  color: var(--book-accent);
   margin-right: 4px;
   padding: 1px 6px;
   border-radius: 3px;
-  background: color-mix(in srgb, var(--book-gold) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--book-gold) 20%, transparent);
+  background: color-mix(in srgb, var(--book-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--book-accent) 20%, transparent);
 }
 
 #comm-body .vs-num {
