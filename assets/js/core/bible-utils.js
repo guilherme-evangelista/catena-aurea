@@ -3,6 +3,7 @@
 const CatenaBible = (() => {
   const CATENA_RANGE_RE = /\d+:(\d+)(?:[\u2013-](\d+))?/;
   const FATHER_LINE_RE = /\n\s*[A-Z\u00C0-\u00D6\u00D8-\u00DE-]{3,}(?:[\s-][A-Z\u00C0-\u00D6\u00D8-\u00DE-]+)*\s*\./;
+  const MAX_REFERENCE_VERSE = 200;
 
   function firstReading(readings) {
     return Array.isArray(readings) && readings.length ? readings[0] : null;
@@ -78,27 +79,23 @@ const CatenaBible = (() => {
   }
 
   function parseReferenceVerseSet(ref) {
-    const source = String(ref || '');
-    const commaIndex = source.indexOf(',');
-    if (commaIndex < 0) return null;
-
-    const verseSpec = source.slice(commaIndex + 1);
-    const segments = verseSpec
-      .split(/[.;]/)
-      .map(segment => segment.trim())
-      .filter(Boolean);
+    const ranges = parseReferenceRanges(ref);
+    if (!ranges.length) return null;
 
     const verses = new Set();
 
-    segments.forEach(segment => {
-      const match = segment.match(/^(\d+[a-c]?)(?:\s*[-\u2013]\s*(\d+[a-c]?))?$/i);
-      if (!match) return;
+    ranges.forEach(range => {
+      if (range.endChapter !== range.startChapter) {
+        for (let verse = range.startVerse; verse <= MAX_REFERENCE_VERSE; verse++) {
+          verses.add(verse);
+        }
+        for (let verse = 1; verse <= range.endVerse; verse++) {
+          verses.add(verse);
+        }
+        return;
+      }
 
-      const start = parseVerseNumber(match[1]);
-      const end = match[2] ? parseVerseNumber(match[2]) : start;
-      if (!start || !end) return;
-
-      for (let verse = Math.min(start, end); verse <= Math.max(start, end); verse++) {
+      for (let verse = Math.min(range.startVerse, range.endVerse); verse <= Math.max(range.startVerse, range.endVerse); verse++) {
         verses.add(verse);
       }
     });
@@ -107,33 +104,34 @@ const CatenaBible = (() => {
   }
 
   function parseReferenceVerseLabelSet(ref) {
-    const source = String(ref || '');
-    const commaIndex = source.indexOf(',');
-    if (commaIndex < 0) return null;
-
-    const verseSpec = source.slice(commaIndex + 1);
-    const segments = verseSpec
-      .split(/[.;]/)
-      .map(segment => segment.trim())
-      .filter(Boolean);
+    const ranges = parseReferenceRanges(ref);
+    if (!ranges.length) return null;
 
     const labels = new Set();
 
-    segments.forEach(segment => {
-      const match = segment.match(/^(\d+[a-c]?)(?:\s*[-\u2013]\s*(\d+[a-c]?))?$/i);
-      if (!match) return;
-
-      const startLabel = match[1].toLowerCase();
-      const endLabel = match[2] ? match[2].toLowerCase() : startLabel;
-      const start = parseVerseNumber(startLabel);
-      const end = parseVerseNumber(endLabel);
-      if (!start || !end) return;
+    ranges.forEach(range => {
+      const startLabel = range.startLabel.toLowerCase();
+      const endLabel = range.endLabel.toLowerCase();
 
       labels.add(startLabel);
       if (endLabel !== startLabel) labels.add(endLabel);
 
+      if (range.endChapter !== range.startChapter) {
+        if (!/[a-c]$/i.test(startLabel)) {
+          for (let verse = range.startVerse; verse <= MAX_REFERENCE_VERSE; verse++) {
+            labels.add(String(verse));
+          }
+        }
+        if (!/[a-c]$/i.test(endLabel)) {
+          for (let verse = 1; verse <= range.endVerse; verse++) {
+            labels.add(String(verse));
+          }
+        }
+        return;
+      }
+
       if (!/[a-c]$/i.test(startLabel) && !/[a-c]$/i.test(endLabel)) {
-        for (let verse = Math.min(start, end); verse <= Math.max(start, end); verse++) {
+        for (let verse = Math.min(range.startVerse, range.endVerse); verse <= Math.max(range.startVerse, range.endVerse); verse++) {
           labels.add(String(verse));
         }
       }
@@ -142,16 +140,102 @@ const CatenaBible = (() => {
     return labels.size ? labels : null;
   }
 
+  function parseReferenceChapterMarkerSet(ref) {
+    const ranges = parseReferenceRanges(ref);
+    if (!ranges.length) return null;
+
+    const markers = new Set();
+    const firstChapter = ranges[0].startChapter;
+
+    ranges.forEach(range => {
+      if (range.startChapter !== firstChapter) {
+        markers.add(range.startChapter);
+      }
+
+      if (range.endChapter !== range.startChapter) {
+        const direction = range.endChapter > range.startChapter ? 1 : -1;
+        for (let chapter = range.startChapter + direction; chapter !== range.endChapter + direction; chapter += direction) {
+          markers.add(chapter);
+        }
+      }
+    });
+
+    return markers.size ? markers : null;
+  }
+
+  function parseReferenceRanges(ref) {
+    const source = String(ref || '');
+    const firstChapterMatch = source.match(/(\d+)\s*,/);
+    if (!firstChapterMatch) return [];
+
+    let currentChapter = Number(firstChapterMatch[1]);
+    if (!currentChapter) return [];
+
+    const verseSpec = source.slice(firstChapterMatch.index + firstChapterMatch[0].length);
+    const segments = verseSpec
+      .split(/[.;]/)
+      .map(segment => segment.trim())
+      .filter(Boolean);
+
+    const ranges = [];
+
+    segments.forEach(segment => {
+      const parsed = parseReferenceSegment(segment, currentChapter);
+      if (!parsed) return;
+
+      ranges.push(parsed);
+      currentChapter = parsed.endChapter;
+    });
+
+    return ranges;
+  }
+
+  function parseReferenceSegment(segment, defaultChapter) {
+    let startChapter = defaultChapter;
+    let body = String(segment || '').trim();
+    const chapterPrefix = body.match(/^(\d+)\s*,\s*(.+)$/);
+
+    if (chapterPrefix) {
+      startChapter = Number(chapterPrefix[1]);
+      body = chapterPrefix[2].trim();
+    }
+
+    const match = body.match(/^(\d+[a-c]?)(?:\s*[-\u2013]\s*(?:(\d+)\s*,\s*)?(\d+[a-c]?))?$/i);
+    if (!match) return null;
+
+    const startLabel = match[1];
+    const startVerse = parseVerseNumber(startLabel);
+    const endChapter = match[2] ? Number(match[2]) : startChapter;
+    const endLabel = match[3] || startLabel;
+    const endVerse = parseVerseNumber(endLabel);
+
+    if (!startChapter || !startVerse || !endChapter || !endVerse) return null;
+
+    return {
+      startChapter,
+      startVerse,
+      startLabel,
+      endChapter,
+      endVerse,
+      endLabel,
+    };
+  }
+
   function collectInlineVerseMarkers(text, options = {}) {
     const source = String(text || '');
     const markerRe = /(^|[\s\n.!?;:,)"'“”‘’»\]])(\d{1,3}(?:[a-cA-C](?=$|[\s\n.!?;:,)"'“”‘’»\]]|["'“‘«([{]))?)(?=$|\s+|["'“”‘’«»([{]|[A-Za-z\u00C0-\u00FF])/g;
     const matches = [];
     const allowedVerses = options.allowedVerses instanceof Set ? options.allowedVerses : null;
     const allowedLabels = options.allowedLabels instanceof Set ? options.allowedLabels : null;
+    const allowedChapterMarkers = options.allowedChapterMarkers instanceof Set ? options.allowedChapterMarkers : null;
     const requireKnownSuffix = options.requireKnownSuffix === true;
     const minVerse = Number.isFinite(options.minVerse) ? options.minVerse : null;
     const maxVerse = Number.isFinite(options.maxVerse) ? options.maxVerse : null;
     let match;
+
+    if (allowedChapterMarkers) {
+      matches.push(...collectInlineChapterMarkers(source, allowedChapterMarkers, allowedVerses));
+    }
 
     while ((match = markerRe.exec(source)) !== null) {
       let label = match[2];
@@ -184,7 +268,35 @@ const CatenaBible = (() => {
       });
     }
 
-    return matches;
+    return matches.sort((a, b) => a.markerStart - b.markerStart);
+  }
+
+  function collectInlineChapterMarkers(source, allowedChapterMarkers, allowedVerses) {
+    const chapterRe = /(^|[\s\n.!?;:,)"'\u201D\u2019\u00BB\]])(\d{1,3})\s*,\s*(\d+[a-cA-C]?)(?=$|\s+|["'\u201C\u2018\u00AB([{]|[A-Za-z\u00C0-\u00FF])/g;
+    const markers = [];
+    let match;
+
+    while ((match = chapterRe.exec(source)) !== null) {
+      const chapter = Number(match[2]);
+      if (!allowedChapterMarkers.has(chapter)) continue;
+
+      const nextVerse = parseVerseNumber(match[3]);
+      if (!nextVerse) continue;
+      if (allowedVerses && !allowedVerses.has(nextVerse)) continue;
+
+      const markerStart = match.index + match[1].length;
+      const markerEnd = markerStart + match[2].length;
+      markers.push({
+        verse: chapter,
+        label: match[2],
+        markerStart,
+        markerEnd,
+        contentStart: markerEnd,
+        isChapterMarker: true,
+      });
+    }
+
+    return markers;
   }
 
   function findDetachedVerseSuffix(source, startIndex, label, allowedLabels) {
@@ -270,6 +382,7 @@ const CatenaBible = (() => {
     parseVerseNumber,
     parseReferenceVerseSet,
     parseReferenceVerseLabelSet,
+    parseReferenceChapterMarkerSet,
     collectInlineVerseMarkers,
     splitGospelText,
     expandLeadingRangeQuote,

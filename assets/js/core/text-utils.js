@@ -23,12 +23,17 @@ const CatenaText = (() => {
       typeof CatenaBible.parseReferenceVerseLabelSet === 'function'
       ? CatenaBible.parseReferenceVerseLabelSet(reference)
       : null;
+    const allowedChapterMarkers = typeof CatenaBible !== 'undefined' &&
+      typeof CatenaBible.parseReferenceChapterMarkerSet === 'function'
+      ? CatenaBible.parseReferenceChapterMarkerSet(reference)
+      : null;
 
     const markers = typeof CatenaBible !== 'undefined' &&
       typeof CatenaBible.collectInlineVerseMarkers === 'function'
       ? CatenaBible.collectInlineVerseMarkers(source, {
         allowedVerses,
         allowedLabels,
+        allowedChapterMarkers,
         requireKnownSuffix: !!String(reference || '').trim(),
       })
       : [];
@@ -43,7 +48,7 @@ const CatenaText = (() => {
     markers.forEach(marker => {
       html += escHtml(source.slice(cursor, marker.markerStart));
       html += `<sup class="lit-v-num">${escHtml(marker.label)}</sup>`;
-      if (source[marker.markerEnd] && !/\s/.test(source[marker.markerEnd])) {
+      if (!marker.isChapterMarker && source[marker.markerEnd] && !/\s/.test(source[marker.markerEnd])) {
         html += ' ';
       }
       cursor = marker.markerEnd;

@@ -13,7 +13,8 @@ const CatenaHomeRenderer = (() => {
       const imgPath = `assets/images/cover-${key}.jpg`;
 
       return `
-        <div class="book-card fade-up"
+        <a class="book-card fade-up"
+             href="?evangelho=${key}&amp;capitulo=1"
              style="animation-delay:${delay}ms"
              role="listitem"
              data-book="${key}"
@@ -29,7 +30,7 @@ const CatenaHomeRenderer = (() => {
             <div class="book-card-name">${CatenaText.escHtml(meta.name)}</div>
             <div class="book-card-cta">Ler coment&aacute;rios &rarr;</div>
           </div>
-        </div>`;
+        </a>`;
     }).join('');
   }
 
