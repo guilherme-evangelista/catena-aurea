@@ -2,7 +2,64 @@
 
 const CatenaBible = (() => {
   const CATENA_RANGE_RE = /\d+:(\d+)(?:[\u2013-](\d+))?/;
-  const FATHER_LINE_RE = /\n\s*[A-Z\u00C0-\u00D6\u00D8-\u00DE-]{3,}(?:[\s-][A-Z\u00C0-\u00D6\u00D8-\u00DE-]+)*\s*\./;
+  const FATHER_NAME_CHARS = 'A-Z\\u00C0-\\u00D6\\u00D8-\\u00DE\\-';
+  const TITLE_CASE_FATHER_NAMES = [
+    'São João Crisóstomo',
+    'Santo Agostinho',
+    'Santo Ambrósio',
+    'Santo Atanásio',
+    'Santo Epifânio',
+    'Santo Hilário',
+    'Santo Isidoro de Pelúsio',
+    'Santo Isidoro',
+    'Santo Pascásio Radberto',
+    'São Basílio',
+    'São Beda, o Venerável',
+    'São Cipriano',
+    'São Cirilo de Alexandria',
+    'São Cirilo de Jerusalém',
+    'São Dionísio de Alexandria',
+    'São Gregório de Nazianzo',
+    'São Gregório de Nissa',
+    'São Gregório Magno',
+    'São Jerônimo',
+    'São João Cassiano',
+    'São João Damasceno',
+    'São Leão Magno',
+    'São Máximo',
+    'São Pedro Crisólogo',
+    'São Remígio',
+    'Alcuíno',
+    'Ambrosiaster',
+    'Concílio de Éfeso',
+    'Dídimo',
+    'Eusébio',
+    'Expositor Grego',
+    'Genádio',
+    'Glosa',
+    'Haymo',
+    'Lanfranc',
+    'Nemésio',
+    'Orígenes',
+    'Petrus Alfonsus',
+    'Pseudo-Agostinho',
+    'Pseudo-Atanásio',
+    'Pseudo-Basílio',
+    'Pseudo-Crisóstomo',
+    'Pseudo-Dionísio',
+    'Pseudo-Jerônimo',
+    'Pseudo-Orígenes',
+    'Rábano Mauro',
+    'Segundo Concílio de Constantinopla',
+    'Severiano',
+    'Teódoto de Ancira',
+    'Teofilato',
+    'Tito de Bostra',
+  ].sort((a, b) => b.length - a.length);
+  const FATHER_LINE_RE = new RegExp(
+    `\\n\\s*(?:[${FATHER_NAME_CHARS}]{3,}(?:[\\s\\-][${FATHER_NAME_CHARS}]+)*|${TITLE_CASE_FATHER_NAMES.map(escapeRegExp).join('|')})\\s*\\.`,
+    'iu'
+  );
   const MAX_REFERENCE_VERSE = 200;
 
   function firstReading(readings) {
@@ -71,6 +128,10 @@ const CatenaBible = (() => {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/\s+/g, '');
+  }
+
+  function escapeRegExp(str) {
+    return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   function parseVerseNumber(token) {

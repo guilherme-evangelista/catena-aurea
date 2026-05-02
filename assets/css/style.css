@@ -1200,10 +1200,10 @@ body:not(.book-active) #sidebar {
 #comm-body strong.father {
   display: inline-block;
   font-family: 'Inter', sans-serif;
-  font-size: .65rem;
+  font-size: .72rem;
   font-weight: 600;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--book-accent);
   margin-right: 4px;
   padding: 1px 6px;
