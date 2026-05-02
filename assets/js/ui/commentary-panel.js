@@ -1,17 +1,20 @@
 'use strict';
 
 const CatenaCommentaryPanel = (() => {
+  let currentVsKey = null;
+
   function open(vsKey) {
     const bookKey = CatenaState.currentBook;
     const chapter = CatenaState.currentChapter;
     const book = CatenaDataService.getBook(bookKey);
     const block = book?.commentary?.[chapter]?.[vsKey];
-    if (!book || !block) return;
+    if (!book || !block) return false;
 
     const meta = BOOK_META[bookKey];
     const theme = BOOK_THEMES[bookKey];
     const refs = CatenaDOM.refs;
 
+    currentVsKey = vsKey;
     highlightVerses(block.range);
 
     refs.commLabel.textContent = `${meta.name} \u2014 Catena \u00c1urea`;
@@ -28,14 +31,16 @@ const CatenaCommentaryPanel = (() => {
 
     refs.commPanel.classList.add('open');
     refs.commPanel.setAttribute('aria-hidden', 'false');
+    return true;
   }
 
   function openFromVerse(verseEl) {
-    open(verseEl.dataset.vskey);
+    return open(verseEl.dataset.vskey);
   }
 
   function close(options = {}) {
     const refs = CatenaDOM.refs;
+    currentVsKey = null;
     refs.commPanel.classList.remove('open');
     refs.commPanel.setAttribute('aria-hidden', 'true');
     setMaximized(false);
@@ -47,14 +52,14 @@ const CatenaCommentaryPanel = (() => {
 
   function toggleMaximized() {
     const panel = CatenaDOM.refs.commPanel;
-    setMaximized(!panel.classList.contains('is-maximized'));
+    return setMaximized(!panel.classList.contains('is-maximized'));
   }
 
   function setMaximized(isMaximized) {
     const refs = CatenaDOM.refs;
     refs.commPanel.classList.toggle('is-maximized', isMaximized);
 
-    if (!refs.commMaximize) return;
+    if (!refs.commMaximize) return isMaximized;
 
     refs.commMaximize.setAttribute('aria-pressed', String(isMaximized));
     refs.commMaximize.setAttribute(
@@ -62,6 +67,16 @@ const CatenaCommentaryPanel = (() => {
       isMaximized ? 'Restaurar painel de comentários' : 'Maximizar comentários'
     );
     refs.commMaximize.title = isMaximized ? 'Restaurar painel' : 'Maximizar comentários';
+    return isMaximized;
+  }
+
+  function getState() {
+    const panel = CatenaDOM.refs.commPanel;
+    return {
+      vsKey: currentVsKey,
+      isOpen: !!panel?.classList.contains('open'),
+      isMaximized: !!panel?.classList.contains('is-maximized'),
+    };
   }
 
   function clearHighlights() {
@@ -96,6 +111,8 @@ const CatenaCommentaryPanel = (() => {
     openFromVerse,
     close,
     toggleMaximized,
+    setMaximized,
+    getState,
     clearHighlights,
   };
 })();

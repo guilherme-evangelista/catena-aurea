@@ -217,6 +217,7 @@ html, body {
   letter-spacing: .07em;
   color: var(--text-dim);
   cursor: pointer;
+  text-decoration: none;
   transition: color var(--transition);
   white-space: nowrap;
   overflow: hidden;
@@ -492,6 +493,8 @@ body:not(.book-active) #sidebar {
   transition: transform .3s, box-shadow .3s;
   aspect-ratio: 2 / 3;
   border: 1px solid var(--border);
+  color: inherit;
+  text-decoration: none;
 }
 .book-card:hover {
   transform: translateY(-6px) scale(1.02);
