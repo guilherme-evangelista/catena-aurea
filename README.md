@@ -8,7 +8,21 @@ Aplicação web de leitura e estudo dos quatro Evangelhos com os comentários pa
 
 ## Demonstração
 
-🔗 **[catena-aurea.github.io](https://guilherme-evangelista.github.io/catena-aurea)**
+🔗 **[catenaaurea.com.br](https://catenaaurea.com.br/)**
+
+Leia a **Catena Áurea em português** com os quatro Evangelhos, comentários patrísticos compilados por Santo Tomás de Aquino e navegação direta por capítulo, versículo e trecho comentado.
+
+📅 **[Liturgia Diária com comentários da Catena Áurea](https://catenaaurea.com.br/?tela=liturgia)** — acompanhe o Evangelho do dia, veja as leituras no calendário litúrgico e encontre a explicação dos Padres da Igreja para rezar, estudar e preparar homilias com profundidade.
+
+Endereço anterior do GitHub Pages: [guilherme-evangelista.github.io/catena-aurea](https://guilherme-evangelista.github.io/catena-aurea)
+
+---
+
+## SEO e indexação
+
+- Página principal: **Catena Áurea de Santo Tomás de Aquino em português**, com Evangelhos comentados pelos Santos Padres.
+- Liturgia diária: **Evangelho do dia com explicação patrística**, calendário litúrgico e acesso rápido aos comentários da Catena Áurea.
+- Arquivos de busca: `robots.txt` aponta para `sitemap.xml`, que lista a página inicial e a rota pública da liturgia diária.
 
 ---
 
@@ -72,6 +86,13 @@ catena-aurea/
 │   ├── lucas.js              ← Evangelho + comentários (~1,9 MB)
 │   └── joao.js               ← Evangelho + comentários (~1,5 MB)
 │
+├── public/
+│   ├── robots.txt            ← Diretivas de indexação para deploys que publicam /public
+│   └── sitemap.xml           ← Sitemap para deploys que publicam /public
+│
+├── robots.txt                ← Diretivas de indexação no GitHub Pages
+├── sitemap.xml               ← URLs públicas para indexação no Google
+│
 └── README.md
 ```
 
@@ -86,7 +107,7 @@ catena-aurea/
 | Scripts | JavaScript vanilla (ES2022, sem frameworks) |
 | Fontes | Google Fonts — Cinzel, Lora, Inter |
 | Dados | JS estático, carregado sob demanda por injeção de `<script>` |
-| Hospedagem | GitHub Pages (estático, gratuito) |
+| Hospedagem | GitHub Pages com domínio próprio |
 
 Sem dependências de terceiros. Sem bundler. Sem build step.
 
