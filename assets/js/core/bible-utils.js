@@ -61,6 +61,7 @@ const CatenaBible = (() => {
     'iu'
   );
   const MAX_REFERENCE_VERSE = 200;
+  const INLINE_MARKER_PADDING_RE = /[\u200B\u200C\u200D\u2060\uFEFF]/;
 
   function firstReading(readings) {
     return Array.isArray(readings) && readings.length ? readings[0] : null;
@@ -284,7 +285,7 @@ const CatenaBible = (() => {
 
   function collectInlineVerseMarkers(text, options = {}) {
     const source = String(text || '');
-    const markerRe = /(^|[\s\n.!?;:,)"'“”‘’»\]])(\d{1,3}(?:[a-cA-C](?=$|[\s\n.!?;:,)"'“”‘’»\]]|["'“‘«([{]))?)(?=$|\s+|["'“”‘’«»([{]|[A-Za-z\u00C0-\u00FF])/g;
+    const markerRe = /(^|[\s\n.!?;:,)"'“”‘’ʼʽ»\]])(\d{1,3}(?:[a-cA-C](?=$|[\s\n.!?;:,)"'“”‘’ʼʽ»\]\u200B\u200C\u200D\u2060\uFEFF]|["'“‘ʼʽ«([{]))?)[\u200B\u200C\u200D\u2060\uFEFF]*(?=$|\s+|[\u200B\u200C\u200D\u2060\uFEFF]|["'“”‘’ʼʽ«»([{]|[A-Za-z\u00C0-\u00FF])/g;
     const matches = [];
     const allowedVerses = options.allowedVerses instanceof Set ? options.allowedVerses : null;
     const allowedLabels = options.allowedLabels instanceof Set ? options.allowedLabels : null;
@@ -305,6 +306,7 @@ const CatenaBible = (() => {
         label = label.slice(0, -1);
         markerEnd -= 1;
       }
+      markerEnd = skipInlineMarkerPadding(source, markerEnd);
       if (requireKnownSuffix && !/[a-c]$/i.test(label) && allowedLabels) {
         const suffix = findDetachedVerseSuffix(source, markerEnd, label, allowedLabels);
         if (suffix) {
@@ -330,6 +332,12 @@ const CatenaBible = (() => {
     }
 
     return matches.sort((a, b) => a.markerStart - b.markerStart);
+  }
+
+  function skipInlineMarkerPadding(source, startIndex) {
+    let index = startIndex;
+    while (INLINE_MARKER_PADDING_RE.test(source[index] || '')) index += 1;
+    return index;
   }
 
   function collectInlineChapterMarkers(source, allowedChapterMarkers, allowedVerses) {
@@ -361,7 +369,7 @@ const CatenaBible = (() => {
   }
 
   function findDetachedVerseSuffix(source, startIndex, label, allowedLabels) {
-    const match = source.slice(startIndex).match(/^\s*([a-cA-C])(?=\S)/);
+    const match = source.slice(startIndex).match(/^[\s\u200B\u200C\u200D\u2060\uFEFF]*([a-cA-C])(?=\S)/);
     if (!match) return null;
 
     const combined = `${label}${match[1]}`.toLowerCase();
