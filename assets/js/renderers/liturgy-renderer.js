@@ -184,8 +184,14 @@ const CatenaLiturgyRenderer = (() => {
     }
 
     const book = gospelRef ? CatenaDataService.getBook(gospelRef.bookKey) : null;
-    const commentary = book?.commentary?.[String(gospelRef.chapter)] || {};
-    const commentaryMap = CatenaBible.buildCommentaryMap(commentary);
+    const commentaryMaps = {};
+    const getCommentaryMap = chapter => {
+      const chapterKey = String(chapter || gospelRef.chapter);
+      if (!commentaryMaps[chapterKey]) {
+        commentaryMaps[chapterKey] = CatenaBible.buildCommentaryMap(book?.commentary?.[chapterKey] || {});
+      }
+      return commentaryMaps[chapterKey];
+    };
 
     const intro = parts.intro
       ? `<p class="liturgy-gospel-intro">${CatenaText.formatPlainText(parts.intro)}</p>`
@@ -193,18 +199,26 @@ const CatenaLiturgyRenderer = (() => {
 
     const verses = parts.verses.map(part => {
       const verseKey = String(part.verse);
-      const commentaryKey = commentaryMap[verseKey];
-      CatenaState.liturgy.verseTexts[verseKey] = part.text;
+      const chapterKey = String(part.chapter || gospelRef.chapter);
+      const commentaryKey = getCommentaryMap(chapterKey)[verseKey];
+      const qualifiedCommentaryKey = commentaryKey && chapterKey !== String(gospelRef.chapter)
+        ? `${chapterKey}:${commentaryKey}`
+        : commentaryKey;
+      const stateVerseKey = `${chapterKey}:${verseKey}`;
+      CatenaState.liturgy.verseTexts[stateVerseKey] = part.text;
 
-      const cls = commentaryKey
+      const cls = qualifiedCommentaryKey
         ? 'liturgy-verse has-commentary'
         : 'liturgy-verse';
-      const interactiveAttrs = commentaryKey
-        ? ` data-vskey="${CatenaText.escHtml(commentaryKey)}" role="button" tabindex="0"`
+      const interactiveAttrs = qualifiedCommentaryKey
+        ? ` data-vskey="${CatenaText.escHtml(qualifiedCommentaryKey)}" role="button" tabindex="0"`
+        : '';
+      const chapterMarker = part.chapterLabel
+        ? `<sup class="lit-v-num">${CatenaText.escHtml(part.chapterLabel)}</sup>, `
         : '';
 
-      return `<span class="${cls}" data-verse="${CatenaText.escHtml(verseKey)}"${interactiveAttrs}>
-        <sup class="lit-v-num">${CatenaText.escHtml(part.label)}</sup> ${CatenaText.formatPlainText(part.text)}
+      return `<span class="${cls}" data-chapter="${CatenaText.escHtml(chapterKey)}" data-verse="${CatenaText.escHtml(verseKey)}"${interactiveAttrs}>
+        ${chapterMarker}<sup class="lit-v-num">${CatenaText.escHtml(part.label)}</sup> ${CatenaText.formatPlainText(part.text)}
       </span>`;
     }).join(' ');
 

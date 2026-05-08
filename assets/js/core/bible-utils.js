@@ -90,11 +90,6 @@ const CatenaBible = (() => {
   }
 
   function parseGospelReference(ref) {
-    if (/[-\u2013]\s*\d+\s*,/.test(ref)) return null;
-
-    const match = String(ref).match(/^\s*([1-3]?\s*[A-Za-z\u00C0-\u00FF]+)\.?\s+(\d+)\s*,\s*(\d+[a-c]?)(?:\s*[-\u2013]\s*(\d+[a-c]?))?/i);
-    if (!match) return null;
-
     const bookMap = {
       mt: 'mateus',
       mat: 'mateus',
@@ -108,18 +103,28 @@ const CatenaBible = (() => {
       jn: 'joao',
       john: 'joao',
     };
-    const bookKey = bookMap[normalizeBookToken(match[1])];
+    const source = String(ref || '');
+    const bookMatch = source.match(/^\s*([1-3]?\s*[A-Za-z\u00C0-\u00FF]+)\.?\s+/i);
+    if (!bookMatch) return null;
+
+    const bookKey = bookMap[normalizeBookToken(bookMatch[1])];
     if (!bookKey) return null;
 
-    const startVerse = parseVerseNumber(match[3]);
-    const endVerse = match[4] ? parseVerseNumber(match[4]) : startVerse;
-    if (!startVerse || !endVerse) return null;
+    const ranges = parseReferenceRanges(source);
+    if (!ranges.length) return null;
+
+    const firstRange = ranges[0];
+    const lastRange = ranges[ranges.length - 1];
 
     return {
       bookKey,
-      chapter: Number(match[2]),
-      startVerse,
-      endVerse,
+      chapter: firstRange.startChapter,
+      startChapter: firstRange.startChapter,
+      endChapter: lastRange.endChapter,
+      startVerse: firstRange.startVerse,
+      endVerse: lastRange.endVerse,
+      startLabel: firstRange.startLabel,
+      endLabel: lastRange.endLabel,
     };
   }
 
@@ -207,12 +212,9 @@ const CatenaBible = (() => {
     if (!ranges.length) return null;
 
     const markers = new Set();
-    const firstChapter = ranges[0].startChapter;
 
     ranges.forEach(range => {
-      if (range.startChapter !== firstChapter) {
-        markers.add(range.startChapter);
-      }
+      markers.add(range.startChapter);
 
       if (range.endChapter !== range.startChapter) {
         const direction = range.endChapter > range.startChapter ? 1 : -1;
@@ -322,6 +324,8 @@ const CatenaBible = (() => {
       if (maxVerse !== null && verse > maxVerse) continue;
 
       const markerStart = match.index + match[1].length;
+      if (matches.some(item => item.markerStart === markerStart)) continue;
+
       matches.push({
         verse,
         label,
@@ -383,11 +387,17 @@ const CatenaBible = (() => {
 
   function splitGospelText(text, gospelRef, reference = '') {
     const source = String(text || '');
+    const allowedVerses = parseReferenceVerseSet(reference);
     const allowedLabels = parseReferenceVerseLabelSet(reference);
+    const allowedChapterMarkers = parseReferenceChapterMarkerSet(reference);
+    const isCrossChapter = !!(gospelRef && gospelRef.endChapter && gospelRef.endChapter !== gospelRef.startChapter);
+    const restrictByReference = !!allowedVerses || isCrossChapter;
     const matches = collectInlineVerseMarkers(source, {
+      allowedVerses,
       allowedLabels,
-      minVerse: gospelRef?.startVerse,
-      maxVerse: gospelRef?.endVerse,
+      allowedChapterMarkers,
+      minVerse: restrictByReference ? null : gospelRef?.startVerse,
+      maxVerse: restrictByReference ? null : gospelRef?.endVerse,
       requireKnownSuffix: !!String(reference || '').trim(),
     });
 
@@ -396,6 +406,7 @@ const CatenaBible = (() => {
         return {
           intro: '',
           verses: [{
+            chapter: gospelRef.chapter,
             verse: gospelRef.startVerse,
             label: String(gospelRef.startVerse),
             text: source.trim(),
@@ -406,13 +417,26 @@ const CatenaBible = (() => {
     }
 
     const intro = source.slice(0, matches[0].markerStart).trim();
-    const verses = matches.map((item, index) => {
+    let currentChapter = gospelRef?.chapter || gospelRef?.startChapter || null;
+    let pendingChapterLabel = null;
+    const verses = [];
+
+    matches.forEach((item, index) => {
+      if (item.isChapterMarker) {
+        currentChapter = item.verse;
+        pendingChapterLabel = item.label;
+        return;
+      }
+
       const next = matches[index + 1];
-      return {
+      verses.push({
+        chapter: currentChapter,
         verse: item.verse,
         label: item.label,
+        chapterLabel: pendingChapterLabel,
         text: source.slice(item.contentStart, next ? next.markerStart : source.length).trim(),
-      };
+      });
+      pendingChapterLabel = null;
     });
 
     return { intro, verses };
