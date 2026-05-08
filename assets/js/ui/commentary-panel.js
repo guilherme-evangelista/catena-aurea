@@ -5,17 +5,18 @@ const CatenaCommentaryPanel = (() => {
 
   function open(vsKey) {
     const bookKey = CatenaState.currentBook;
-    const chapter = CatenaState.currentChapter;
+    const target = parseCommentaryTarget(vsKey, CatenaState.currentChapter);
+    const chapter = target.chapter;
     const book = CatenaDataService.getBook(bookKey);
-    const block = book?.commentary?.[chapter]?.[vsKey];
+    const block = book?.commentary?.[chapter]?.[target.vsKey];
     if (!book || !block) return false;
 
     const meta = BOOK_META[bookKey];
     const theme = BOOK_THEMES[bookKey];
     const refs = CatenaDOM.refs;
 
-    currentVsKey = vsKey;
-    highlightVerses(block.range);
+    currentVsKey = target.routeKey;
+    highlightVerses(block.range, chapter);
 
     refs.commLabel.textContent = `${meta.name} \u2014 Catena \u00c1urea`;
     refs.commRef.textContent = block.range;
@@ -36,6 +37,24 @@ const CatenaCommentaryPanel = (() => {
 
   function openFromVerse(verseEl) {
     return open(verseEl.dataset.vskey);
+  }
+
+  function parseCommentaryTarget(vsKey, fallbackChapter) {
+    const raw = String(vsKey || '');
+    const match = raw.match(/^(\d+):(.+)$/);
+    if (!match) {
+      return {
+        chapter: String(fallbackChapter || ''),
+        vsKey: raw,
+        routeKey: raw,
+      };
+    }
+
+    return {
+      chapter: match[1],
+      vsKey: match[2],
+      routeKey: raw,
+    };
   }
 
   function close(options = {}) {
@@ -84,11 +103,12 @@ const CatenaCommentaryPanel = (() => {
       .forEach(row => row.classList.remove('highlighted'));
   }
 
-  function highlightVerses(rangeStr) {
+  function highlightVerses(rangeStr, chapter = null) {
     clearHighlights();
 
     const range = CatenaBible.parseCatenaRange(rangeStr);
     if (!range) return;
+    const chapterKey = chapter ? String(chapter) : null;
 
     document.querySelectorAll('.verse-row').forEach(row => {
       const verseNumber = row.querySelector('.v-num');
@@ -99,6 +119,8 @@ const CatenaCommentaryPanel = (() => {
     });
 
     document.querySelectorAll('.liturgy-verse[data-verse]').forEach(verse => {
+      if (chapterKey && verse.dataset.chapter && verse.dataset.chapter !== chapterKey) return;
+
       const value = Number(verse.dataset.verse);
       if (value >= range.start && value <= range.end) {
         verse.classList.add('highlighted');
