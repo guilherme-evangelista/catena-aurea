@@ -301,6 +301,10 @@ const CatenaBible = (() => {
       matches.push(...collectInlineChapterMarkers(source, allowedChapterMarkers, allowedVerses));
     }
 
+    if (requireKnownSuffix && (allowedVerses || allowedLabels)) {
+      matches.push(...collectEmbeddedVerseMarkers(source, allowedVerses, allowedLabels));
+    }
+
     while ((match = markerRe.exec(source)) !== null) {
       let label = match[2];
       let markerEnd = match.index + match[1].length + label.length;
@@ -336,6 +340,32 @@ const CatenaBible = (() => {
     }
 
     return matches.sort((a, b) => a.markerStart - b.markerStart);
+  }
+
+  function collectEmbeddedVerseMarkers(source, allowedVerses, allowedLabels) {
+    const markerRe = /[A-Za-z\u00C0-\u00FF](\d{1,3}(?:[a-cA-C])?)(?=[A-Za-z\u00C0-\u00FF])/g;
+    const markers = [];
+    let match;
+
+    while ((match = markerRe.exec(source)) !== null) {
+      const label = match[1];
+      const verse = parseVerseNumber(label);
+      if (!verse) continue;
+      if (allowedVerses && !allowedVerses.has(verse)) continue;
+      if (allowedLabels && !allowedLabels.has(label.toLowerCase())) continue;
+
+      const markerStart = match.index + match[0].length - label.length;
+      const markerEnd = markerStart + label.length;
+      markers.push({
+        verse,
+        label,
+        markerStart,
+        markerEnd,
+        contentStart: markerEnd,
+      });
+    }
+
+    return markers;
   }
 
   function skipInlineMarkerPadding(source, startIndex) {
