@@ -22,13 +22,18 @@ const CatenaHomeRenderer = (() => {
              aria-label="Abrir ${CatenaText.escHtml(meta.name)}">
           <div class="book-card-bg"
                style="background-image:url('${imgPath}');background-color:${theme.bg1}"></div>
-          <div class="book-card-overlay"
-               style="background:linear-gradient(to top,rgba(0,0,0,.95) 0%,rgba(0,0,0,.5) 45%,rgba(0,0,0,.1) 100%)"></div>
+          <div class="book-card-glow"
+               style="--card-accent:${theme.accent};--card-gold:${theme.gold};--card-bg:${theme.bg1}"></div>
+          <div class="book-card-frame" style="border-color:${theme.accent}"></div>
           <div class="book-card-body">
-            <div class="book-card-symbol" style="color:${symbolColor}">${symbol}</div>
-            <div class="book-card-vol" style="color:${theme.gold};opacity:.7">${CatenaText.escHtml(meta.vol)}</div>
+            <div class="book-card-eyebrow">Evangelho de</div>
+            <div class="book-card-vol" style="color:${theme.gold}">${CatenaText.escHtml(meta.vol)}</div>
             <div class="book-card-name">${CatenaText.escHtml(meta.name)}</div>
-            <div class="book-card-cta">Ler coment&aacute;rios &rarr;</div>
+            <div class="book-card-cta">
+              <div class="book-card-symbol" style="color:${symbolColor}">${symbol}</div>
+              <span class="book-card-cta-label" data-short-label="Coment&aacute;rios">Ler coment&aacute;rios</span>
+              <span aria-hidden="true">&rarr;</span>
+            </div>
           </div>
         </a>`;
     }).join('');

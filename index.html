@@ -14,7 +14,7 @@
   <link rel="icon" id="favicon" href="assets/images/favicon-mateus.png?v=20260425-symbol-colors" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=20260502-father-names">
+  <link rel="stylesheet" href="assets/css/style.css?v=20260516-home-light">
 </head>
 <body>
   <div id="app">
@@ -68,15 +68,75 @@
 
       <!-- Welcome / Book Gallery -->
       <section id="welcome" aria-label="Galeria dos Evangelhos">
-        <div class="welcome-title">
-          <h1>Catena Áurea</h1>
-          <p>Exposição Contínua sobre os Santos Evangelhos</p>
+        <div class="welcome-bg" aria-hidden="true">
+          <img class="welcome-portrait" src="assets/images/home_sao_tomas.png" alt="">
         </div>
-        <a class="welcome-liturgy-link fade-up" id="welcome-liturgia" href="?tela=liturgia">
-          <span class="welcome-liturgy-icon" aria-hidden="true">&#10016;</span>
-          <span>Liturgia Di&aacute;ria</span>
-        </a>
-        <div class="book-cards" id="book-cards" role="list"></div>
+
+        <div class="welcome-shell">
+          <div class="welcome-title fade-up">
+            <div class="welcome-badge">
+              <span aria-hidden="true">&#10016;</span>
+              <span>Exposi&ccedil;&atilde;o Cont&iacute;nua</span>
+            </div>
+            <h1>Catena Áurea</h1>
+            <p>A explicação contínua dos Santos Evangelhos</p>
+            <p class="welcome-copy">
+              A Catena &Aacute;urea re&uacute;ne os coment&aacute;rios dos Padres da Igreja sobre os Evangelhos,
+              organizados por Santo Tom&aacute;s de Aquino.
+            </p>
+            <div class="welcome-actions">
+              <a class="welcome-liturgy-link" id="welcome-liturgia" href="?tela=liturgia">
+                <span class="welcome-liturgy-icon" aria-hidden="true">&#10016;</span>
+                <span>Liturgia Di&aacute;ria</span>
+              </a>
+            </div>
+          </div>
+          <div class="book-cards" id="book-cards" role="list"></div>
+
+          <div class="home-feature-strip fade-up" id="home-features" aria-label="Destaques da Catena Aurea">
+            <div class="home-feature">
+              <span class="home-feature-icon" aria-hidden="true">
+                <img src="assets/images/home_biblia.png" alt="">
+              </span>
+              <div>
+                <h2>Fiel &agrave; Tradi&ccedil;&atilde;o</h2>
+                <p>Coment&aacute;rio cont&iacute;nuo dos Padres da Igreja, organizado por Santo Tom&aacute;s de Aquino.</p>
+              </div>
+            </div>
+            <div class="home-feature">
+              <span class="home-feature-icon" aria-hidden="true">
+                <img src="assets/images/home_cruz.png" alt="">
+              </span>
+              <div>
+                <h2>Para cada dia</h2>
+                <p>Acompanhe a Liturgia Di&aacute;ria e aprofunde seu estudo com os textos pr&oacute;prios.</p>
+              </div>
+            </div>
+            <div class="home-feature">
+              <span class="home-feature-icon" aria-hidden="true">
+                <img src="assets/images/home_lupa.png" alt="">
+              </span>
+              <div>
+                <h2>Estudo profundo</h2>
+                <p>Navegue pelos Evangelhos, cap&iacute;tulos, vers&iacute;culos e coment&aacute;rios patr&iacute;sticos.</p>
+              </div>
+            </div>
+            <div class="home-feature">
+              <span class="home-feature-icon" aria-hidden="true">
+                <img src="assets/images/home_coracao.png" alt="">
+              </span>
+              <div>
+                <h2>Alimento da alma</h2>
+                <p>Medite a Palavra de Deus com a sabedoria dos santos ao longo do ano lit&uacute;rgico.</p>
+              </div>
+            </div>
+          </div>
+
+          <blockquote class="home-quote fade-up">
+            <p>Aquele que desejar receber a palavra divina com fruto, procure-a com a companhia dos santos.</p>
+            <cite>Santo Tom&aacute;s de Aquino</cite>
+          </blockquote>
+        </div>
       </section>
 
       <!-- Chapter reader -->
@@ -123,7 +183,7 @@
   <script src="assets/js/core/state.js"></script>
   <script src="assets/js/core/dom.js?v=20260425-comment-panel"></script>
   <script src="assets/js/services/data-service.js"></script>
-  <script src="assets/js/renderers/home-renderer.js?v=20260502-routes"></script>
+  <script src="assets/js/renderers/home-renderer.js?v=20260516-home-redesign"></script>
   <script src="assets/js/renderers/chapter-renderer.js"></script>
   <script src="assets/js/renderers/liturgy-renderer.js?v=20260508-cross-chapter"></script>
   <script src="assets/js/ui/appearance.js"></script>
