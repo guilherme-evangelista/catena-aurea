@@ -52,6 +52,9 @@ const CatenaAppearance = (() => {
       toggle.setAttribute('title', meta.label);
       if (modeIcon) modeIcon.innerHTML = meta.icon;
     }
+
+    const activeBook = document.documentElement.dataset.bookTheme;
+    if (activeBook && typeof applyTheme === 'function') applyTheme(activeBook);
   }
 
   function toggleColorMode() {

@@ -13,6 +13,71 @@
   --text-dim:    rgba(232, 230, 224, .55);
   --text-faint:  rgba(232, 230, 224, .32);
 
+  --home-header-bg: rgba(8, 9, 12, .94);
+  --home-header-border: rgba(255, 255, 255, .12);
+  --home-header-text: #e8e6e0;
+  --home-header-text-dim: rgba(232, 230, 224, .58);
+  --home-header-text-faint: rgba(232, 230, 224, .36);
+  --home-header-border-soft: rgba(255, 255, 255, .1);
+  --home-header-border-strong: rgba(255, 255, 255, .16);
+
+  --home-bg:
+    radial-gradient(circle at 78% 8%, rgba(170, 117, 42, .18), transparent 34%),
+    radial-gradient(circle at 16% 72%, rgba(64, 94, 135, .16), transparent 34%),
+    linear-gradient(180deg, #111114 0%, #090a0d 52%, #07080a 100%);
+  --home-text: #eee9de;
+  --home-heading: #f6f3ec;
+  --home-heading-shadow: 0 5px 24px rgba(0, 0, 0, .65);
+  --home-kicker: rgba(222, 184, 124, .72);
+  --home-copy: rgba(238, 233, 222, .7);
+  --home-overlay:
+    linear-gradient(90deg, rgba(7, 8, 10, .98) 0%, rgba(7, 8, 10, .8) 44%, rgba(7, 8, 10, .36) 72%, rgba(7, 8, 10, .88) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, .18) 0%, rgba(7, 8, 10, .92) 92%);
+  --home-overlay-mobile:
+    linear-gradient(90deg, rgba(7, 8, 10, .96) 0%, rgba(7, 8, 10, .82) 62%, rgba(7, 8, 10, .58) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, .1) 0%, rgba(7, 8, 10, .94) 88%);
+  --home-grid-line-a: rgba(255, 255, 255, .025);
+  --home-grid-line-b: rgba(255, 255, 255, .018);
+  --home-grid-opacity: .22;
+  --home-portrait-opacity: .42;
+  --home-portrait-filter: sepia(.16) saturate(.95) contrast(1.08) drop-shadow(0 18px 80px rgba(212, 160, 48, .18));
+  --home-badge-border: rgba(216, 168, 87, .28);
+  --home-badge-bg: linear-gradient(180deg, rgba(131, 91, 32, .42), rgba(83, 54, 17, .26));
+  --home-badge-text: #e0b46d;
+  --home-badge-shadow: 0 12px 38px rgba(171, 110, 35, .18), inset 0 1px 0 rgba(255, 255, 255, .08);
+  --home-action-border: color-mix(in srgb, var(--book-accent) 58%, transparent);
+  --home-action-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-bg2) 74%, rgba(255, 255, 255, .08)),
+    color-mix(in srgb, var(--book-bg1) 78%, rgba(0, 0, 0, .4))
+  );
+  --home-action-text: color-mix(in srgb, var(--book-symbol) 74%, #fff 26%);
+  --home-action-shadow: 0 14px 38px color-mix(in srgb, var(--book-accent) 24%, transparent), inset 0 1px 0 rgba(255, 255, 255, .08);
+  --home-action-hover-border: color-mix(in srgb, var(--book-symbol) 80%, #fff 8%);
+  --home-action-hover-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-bg2) 86%, rgba(255, 255, 255, .12)),
+    color-mix(in srgb, var(--book-bg1) 86%, rgba(0, 0, 0, .34))
+  );
+  --home-action-hover-text: color-mix(in srgb, var(--book-symbol) 58%, #fff 42%);
+  --home-action-hover-shadow: 0 18px 44px color-mix(in srgb, var(--book-accent) 34%, transparent), inset 0 1px 0 rgba(255, 255, 255, .12);
+  --home-card-border: rgba(255, 255, 255, .13);
+  --home-card-shadow: 0 18px 42px rgba(0, 0, 0, .52);
+  --home-card-hover-shadow: 0 28px 70px rgba(0, 0, 0, .68);
+  --home-card-glow:
+    radial-gradient(circle at 50% 18%, rgba(214, 166, 82, .16), transparent 33%),
+    linear-gradient(180deg, rgba(0, 0, 0, .08) 0%, rgba(0, 0, 0, .04) 42%, rgba(0, 0, 0, .72) 82%, rgba(0, 0, 0, .92) 100%);
+  --home-card-text-shadow: 0 2px 10px rgba(0, 0, 0, .76);
+  --home-panel-border: rgba(255, 255, 255, .14);
+  --home-panel-bg: linear-gradient(180deg, rgba(23, 24, 28, .78), rgba(13, 14, 17, .74));
+  --home-panel-shadow: 0 18px 64px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255, 255, 255, .05);
+  --home-panel-heading: #e8cf9f;
+  --home-panel-text: rgba(238, 233, 222, .58);
+  --home-feature-divider: rgba(255, 255, 255, .1);
+  --home-quote: rgba(238, 233, 222, .52);
+  --home-quote-accent: rgba(214, 166, 82, .78);
+  --home-quote-mark: rgba(214, 166, 82, .48);
+
   /* Book accent colours — overridden via JS per active book */
   --book-bg1:    #1a2744;
   --book-bg2:    #243662;
@@ -22,7 +87,8 @@
   --book-glow:   rgba(106, 143, 216, .18);
 
   --hdr-h:   64px;
-  --sidebar-w: 260px;
+  --sidebar-w: 224px;
+  --comm-panel-w: clamp(360px, 40vw, 720px);
   --radius:  10px;
   --radius-lg: 16px;
   --transition: .2s ease;
@@ -34,14 +100,79 @@
 
 :root[data-color-mode="light"] {
   color-scheme: light;
-  --bg:          #f4f0e8;
-  --surface:     #fbf7ef;
-  --surface2:    #ede6d9;
-  --border:      rgba(45, 37, 28, .12);
-  --border2:     rgba(45, 37, 28, .2);
-  --text:        #231f19;
-  --text-dim:    rgba(35, 31, 25, .68);
-  --text-faint:  rgba(35, 31, 25, .42);
+  --bg:          #eee2d0;
+  --surface:     #fff9ef;
+  --surface2:    #e6d5bd;
+  --border:      rgba(43, 31, 20, .22);
+  --border2:     rgba(43, 31, 20, .34);
+  --text:        #17130e;
+  --text-dim:    rgba(23, 19, 14, .78);
+  --text-faint:  rgba(23, 19, 14, .58);
+
+  --home-header-bg: rgba(239, 228, 211, .94);
+  --home-header-border: rgba(43, 31, 20, .2);
+  --home-header-text: #17130e;
+  --home-header-text-dim: rgba(23, 19, 14, .76);
+  --home-header-text-faint: rgba(23, 19, 14, .54);
+  --home-header-border-soft: rgba(43, 31, 20, .18);
+  --home-header-border-strong: rgba(43, 31, 20, .28);
+
+  --home-bg:
+    radial-gradient(circle at 78% 8%, rgba(164, 102, 22, .2), transparent 34%),
+    radial-gradient(circle at 14% 76%, rgba(42, 70, 104, .14), transparent 34%),
+    linear-gradient(180deg, #f5efe5 0%, #ebddca 55%, #dec8aa 100%);
+  --home-text: #17130e;
+  --home-heading: #100d09;
+  --home-heading-shadow: 0 2px 0 rgba(255, 255, 255, .8), 0 12px 28px rgba(62, 43, 24, .14);
+  --home-kicker: #6b4316;
+  --home-copy: #2b231a;
+  --home-overlay:
+    linear-gradient(90deg, rgba(245, 239, 229, .96) 0%, rgba(245, 239, 229, .84) 46%, rgba(245, 239, 229, .54) 72%, rgba(245, 239, 229, .88) 100%),
+    linear-gradient(180deg, rgba(245, 239, 229, .18) 0%, rgba(222, 200, 170, .86) 94%);
+  --home-overlay-mobile:
+    linear-gradient(90deg, rgba(245, 239, 229, .97) 0%, rgba(245, 239, 229, .88) 62%, rgba(245, 239, 229, .68) 100%),
+    linear-gradient(180deg, rgba(245, 239, 229, .18) 0%, rgba(222, 200, 170, .92) 88%);
+  --home-grid-line-a: rgba(43, 31, 20, .07);
+  --home-grid-line-b: rgba(43, 31, 20, .055);
+  --home-grid-opacity: .52;
+  --home-portrait-opacity: .34;
+  --home-portrait-filter: sepia(.2) saturate(.92) contrast(1.08) drop-shadow(0 18px 70px rgba(80, 54, 26, .2));
+  --home-badge-border: rgba(107, 67, 22, .42);
+  --home-badge-bg: linear-gradient(180deg, rgba(255, 246, 226, .96), rgba(218, 174, 104, .36));
+  --home-badge-text: #6b4316;
+  --home-badge-shadow: 0 10px 28px rgba(111, 77, 36, .14), inset 0 1px 0 rgba(255, 255, 255, .78);
+  --home-action-border: color-mix(in srgb, var(--book-accent) 62%, rgba(23, 19, 14, .24));
+  --home-action-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-accent) 14%, #fff9ef),
+    color-mix(in srgb, var(--book-accent) 24%, #e6d5bd)
+  );
+  --home-action-text: var(--book-bg2);
+  --home-action-shadow: 0 12px 30px color-mix(in srgb, var(--book-accent) 22%, transparent), inset 0 1px 0 rgba(255, 255, 255, .72);
+  --home-action-hover-border: color-mix(in srgb, var(--book-accent) 78%, rgba(23, 19, 14, .22));
+  --home-action-hover-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-accent) 18%, #fffdf8),
+    color-mix(in srgb, var(--book-accent) 32%, #e6d5bd)
+  );
+  --home-action-hover-text: var(--book-bg1);
+  --home-action-hover-shadow: 0 16px 36px color-mix(in srgb, var(--book-accent) 28%, transparent), inset 0 1px 0 rgba(255, 255, 255, .8);
+  --home-card-border: rgba(43, 31, 20, .24);
+  --home-card-shadow: 0 20px 46px rgba(70, 48, 24, .28);
+  --home-card-hover-shadow: 0 28px 64px rgba(70, 48, 24, .34);
+  --home-card-glow:
+    radial-gradient(circle at 50% 18%, rgba(214, 166, 82, .12), transparent 32%),
+    linear-gradient(180deg, rgba(0, 0, 0, .18) 0%, rgba(0, 0, 0, .12) 42%, rgba(0, 0, 0, .78) 80%, rgba(0, 0, 0, .95) 100%);
+  --home-card-text-shadow: 0 2px 12px rgba(0, 0, 0, .9);
+  --home-panel-border: rgba(43, 31, 20, .22);
+  --home-panel-bg: linear-gradient(180deg, rgba(255, 251, 243, .96), rgba(232, 216, 192, .92));
+  --home-panel-shadow: 0 18px 54px rgba(70, 48, 24, .18), inset 0 1px 0 rgba(255, 255, 255, .78);
+  --home-panel-heading: #4d2f0c;
+  --home-panel-text: #31281f;
+  --home-feature-divider: rgba(43, 31, 20, .16);
+  --home-quote: rgba(33, 26, 19, .72);
+  --home-quote-accent: rgba(103, 67, 19, .86);
+  --home-quote-mark: rgba(103, 67, 19, .62);
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
@@ -88,27 +219,18 @@ html, body {
   padding-top: max(0px, env(safe-area-inset-top));
 }
 :root[data-color-mode="light"] #header {
-  background: rgba(244, 240, 232, .92);
+  background: rgba(239, 228, 211, .94);
+  border-bottom-color: var(--border);
 }
 
 body:not(.book-active):not(.liturgy-active) #header {
-  --text: #e8e6e0;
-  --text-dim: rgba(232, 230, 224, .58);
-  --text-faint: rgba(232, 230, 224, .36);
-  --border: rgba(255, 255, 255, .1);
-  --border2: rgba(255, 255, 255, .16);
-  background: rgba(8, 9, 12, .94);
-  border-bottom-color: rgba(255, 255, 255, .12);
-}
-
-:root[data-color-mode="light"] body:not(.book-active):not(.liturgy-active) #header {
-  --text: #231f19;
-  --text-dim: rgba(35, 31, 25, .68);
-  --text-faint: rgba(35, 31, 25, .42);
-  --border: rgba(45, 37, 28, .12);
-  --border2: rgba(45, 37, 28, .2);
-  background: rgba(244, 240, 232, .92);
-  border-bottom-color: rgba(45, 37, 28, .12);
+  --text: var(--home-header-text);
+  --text-dim: var(--home-header-text-dim);
+  --text-faint: var(--home-header-text-faint);
+  --border: var(--home-header-border-soft);
+  --border2: var(--home-header-border-strong);
+  background: var(--home-header-bg);
+  border-bottom-color: var(--home-header-border);
 }
 
 .logo-btn {
@@ -299,14 +421,14 @@ body:not(.book-active):not(.liturgy-active) #header {
   margin-left: auto;
 }
 body:not(.book-active):not(.liturgy-active) .liturgy-tab {
-  border: 1px solid rgba(217, 74, 67, .42);
-  background: rgba(65, 22, 20, .35);
-  color: #ff9a8f;
+  border: 1px solid var(--home-action-border);
+  background: var(--home-action-bg);
+  color: var(--home-action-text);
   padding-inline: 18px;
 }
 body:not(.book-active):not(.liturgy-active) .liturgy-tab:hover {
-  border-color: rgba(255, 116, 104, .68);
-  color: #ffd5cf;
+  border-color: var(--home-action-hover-border);
+  color: var(--home-action-hover-text);
 }
 .liturgy-symbol {
   display: inline-flex;
@@ -365,7 +487,7 @@ body:not(.book-active) #sidebar {
 }
 
 .sidebar-header {
-  padding: 16px 16px 10px;
+  padding: 14px 14px 8px;
   font-family: 'Inter', sans-serif;
   font-size: .6rem;
   font-weight: 500;
@@ -376,7 +498,7 @@ body:not(.book-active) #sidebar {
   flex-shrink: 0;
 }
 
-#chapter-list { padding: 6px 0; flex: 1; }
+#chapter-list { padding: 3px 0; flex: 1; }
 
 .ch-btn {
   display: flex;
@@ -386,13 +508,13 @@ body:not(.book-active) #sidebar {
   background: none;
   border: none;
   border-left: 2px solid transparent;
-  padding: 7px 16px;
+  padding: 5px 14px;
   font-family: 'Lora', serif;
-  font-size: .88rem;
+  font-size: .84rem;
   color: var(--text-dim);
   cursor: pointer;
   transition: all .15s;
-  min-height: 44px;
+  min-height: 38px;
   touch-action: manipulation;
 }
 .ch-btn:hover { color: var(--text); background: rgba(255, 255, 255, .04); }
@@ -426,6 +548,7 @@ body:not(.book-active) #sidebar {
   overflow-y: auto;
   background: var(--bg);
   position: relative;
+  transition: background .4s, padding-right .35s cubic-bezier(.4, 0, .2, 1);
 }
 
 /* ── Welcome / Book gallery ─────────────────────────────────── */
@@ -436,11 +559,8 @@ body:not(.book-active) #sidebar {
   min-height: 100%;
   padding: clamp(24px, 4vh, 46px) 28px 28px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 78% 8%, rgba(170, 117, 42, .18), transparent 34%),
-    radial-gradient(circle at 16% 72%, rgba(64, 94, 135, .16), transparent 34%),
-    linear-gradient(180deg, #111114 0%, #090a0d 52%, #07080a 100%);
-  color: #eee9de;
+  background: var(--home-bg);
+  color: var(--home-text);
 }
 
 .welcome-bg {
@@ -454,9 +574,7 @@ body:not(.book-active) #sidebar {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(7, 8, 10, .98) 0%, rgba(7, 8, 10, .8) 44%, rgba(7, 8, 10, .36) 72%, rgba(7, 8, 10, .88) 100%),
-    linear-gradient(180deg, rgba(7, 8, 10, .18) 0%, rgba(7, 8, 10, .92) 92%);
+  background: var(--home-overlay);
   z-index: 1;
 }
 
@@ -465,10 +583,10 @@ body:not(.book-active) #sidebar {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    linear-gradient(var(--home-grid-line-a) 1px, transparent 1px),
+    linear-gradient(90deg, var(--home-grid-line-b) 1px, transparent 1px);
   background-size: 64px 64px;
-  opacity: .22;
+  opacity: var(--home-grid-opacity);
   z-index: 2;
 }
 
@@ -478,8 +596,8 @@ body:not(.book-active) #sidebar {
   right: max(-18px, calc((100vw - 1280px) / 2 - 30px));
   width: min(44vw, 560px);
   height: auto;
-  opacity: .42;
-  filter: sepia(.16) saturate(.95) contrast(1.08) drop-shadow(0 18px 80px rgba(212, 160, 48, .18));
+  opacity: var(--home-portrait-opacity);
+  filter: var(--home-portrait-filter);
   transform: translateY(-1%);
 }
 
@@ -510,11 +628,11 @@ body:not(.book-active) #sidebar {
   gap: 9px;
   min-height: 34px;
   padding: 0 18px;
-  border: 1px solid rgba(216, 168, 87, .28);
+  border: 1px solid var(--home-badge-border);
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(131, 91, 32, .42), rgba(83, 54, 17, .26));
-  color: #e0b46d;
-  box-shadow: 0 12px 38px rgba(171, 110, 35, .18), inset 0 1px 0 rgba(255, 255, 255, .08);
+  background: var(--home-badge-bg);
+  color: var(--home-badge-text);
+  box-shadow: var(--home-badge-shadow);
   font-family: 'Cinzel', serif;
   font-size: .66rem;
   font-weight: 700;
@@ -527,17 +645,17 @@ body:not(.book-active) #sidebar {
   font-family: 'Cinzel', serif;
   font-size: clamp(2.9rem, 5.4vw, 5rem);
   font-weight: 600;
-  color: #f6f3ec;
+  color: var(--home-heading);
   letter-spacing: .07em;
   line-height: .95;
   margin-bottom: 14px;
-  text-shadow: 0 5px 24px rgba(0, 0, 0, .65);
+  text-shadow: var(--home-heading-shadow);
 }
 
 .welcome-title > p:not(.welcome-copy) {
   font-family: 'Inter', sans-serif;
   font-size: clamp(.72rem, 1.3vw, .92rem);
-  color: rgba(222, 184, 124, .72);
+  color: var(--home-kicker);
   letter-spacing: .36em;
   text-transform: uppercase;
   margin-bottom: 18px;
@@ -545,7 +663,7 @@ body:not(.book-active) #sidebar {
 
 .welcome-copy {
   max-width: 570px;
-  color: rgba(238, 233, 222, .7);
+  color: var(--home-copy);
   font-size: clamp(.92rem, 1.25vw, 1.08rem);
   line-height: 1.45;
   text-wrap: balance;
@@ -561,9 +679,9 @@ body:not(.book-active) #sidebar {
 
 .welcome-liturgy-link {
   appearance: none;
-  border: 1px solid rgba(217, 74, 67, .55);
-  background: linear-gradient(180deg, rgba(96, 28, 25, .78), rgba(63, 20, 19, .7));
-  color: #ffb0a4;
+  border: 1px solid var(--home-action-border);
+  background: var(--home-action-bg);
+  color: var(--home-action-text);
   min-height: 46px;
   min-width: 210px;
   padding: 0 22px;
@@ -579,17 +697,17 @@ body:not(.book-active) #sidebar {
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 14px 38px rgba(118, 28, 24, .24), inset 0 1px 0 rgba(255,255,255,.08);
+  box-shadow: var(--home-action-shadow);
   transition: border-color .2s, background .2s, color .2s, transform .2s, box-shadow .2s;
 }
 
 .welcome-liturgy-link:hover,
 .welcome-liturgy-link:focus-visible {
-  border-color: rgba(255, 116, 104, .78);
-  background: linear-gradient(180deg, rgba(116, 35, 31, .86), rgba(74, 22, 20, .76));
-  color: #fff0eb;
+  border-color: var(--home-action-hover-border);
+  background: var(--home-action-hover-bg);
+  color: var(--home-action-hover-text);
   transform: translateY(-2px);
-  box-shadow: 0 18px 44px rgba(118, 28, 24, .34), inset 0 1px 0 rgba(255,255,255,.12);
+  box-shadow: var(--home-action-hover-shadow);
   outline: none;
 }
 
@@ -620,15 +738,15 @@ body:not(.book-active) #sidebar {
   cursor: pointer;
   transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
   aspect-ratio: 3 / 4;
-  border: 1px solid rgba(255, 255, 255, .13);
+  border: 1px solid var(--home-card-border);
   color: #f7efe1;
   text-decoration: none;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, .52);
+  box-shadow: var(--home-card-shadow);
   isolation: isolate;
 }
 .book-card:hover {
   transform: translateY(-7px);
-  box-shadow: 0 28px 70px rgba(0, 0, 0, .68);
+  box-shadow: var(--home-card-hover-shadow);
 }
 
 .book-card-bg {
@@ -644,9 +762,7 @@ body:not(.book-active) #sidebar {
 .book-card-glow {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--card-gold) 18%, transparent), transparent 33%),
-    linear-gradient(180deg, rgba(0,0,0,.08) 0%, rgba(0,0,0,.04) 42%, rgba(0,0,0,.72) 82%, rgba(0,0,0,.92) 100%);
+  background: var(--home-card-glow);
   z-index: 1;
 }
 
@@ -672,7 +788,7 @@ body:not(.book-active) #sidebar {
   justify-content: flex-end;
   text-align: left;
   gap: 4px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, .76);
+  text-shadow: var(--home-card-text-shadow);
 }
 
 .book-card-eyebrow {
@@ -746,10 +862,10 @@ body:not(.book-active) #sidebar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
-  border: 1px solid rgba(255, 255, 255, .14);
+  border: 1px solid var(--home-panel-border);
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(23, 24, 28, .78), rgba(13, 14, 17, .74));
-  box-shadow: 0 18px 64px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255,255,255,.05);
+  background: var(--home-panel-bg);
+  box-shadow: var(--home-panel-shadow);
   backdrop-filter: blur(14px);
   overflow: hidden;
 }
@@ -764,7 +880,7 @@ body:not(.book-active) #sidebar {
 }
 
 .home-feature + .home-feature {
-  border-left: 1px solid rgba(255, 255, 255, .1);
+  border-left: 1px solid var(--home-feature-divider);
 }
 
 .home-feature-icon {
@@ -789,7 +905,7 @@ body:not(.book-active) #sidebar {
   font-family: 'Cinzel', serif;
   font-size: .92rem;
   font-weight: 600;
-  color: #e8cf9f;
+  color: var(--home-panel-heading);
   line-height: 1.2;
   margin-bottom: 4px;
 }
@@ -797,12 +913,12 @@ body:not(.book-active) #sidebar {
 .home-feature p {
   font-size: .75rem;
   line-height: 1.42;
-  color: rgba(238, 233, 222, .58);
+  color: var(--home-panel-text);
 }
 
 .home-quote {
   text-align: center;
-  color: rgba(238, 233, 222, .52);
+  color: var(--home-quote);
   margin-top: -2px;
   font-style: italic;
 }
@@ -814,7 +930,7 @@ body:not(.book-active) #sidebar {
 
 .home-quote p::before,
 .home-quote p::after {
-  color: rgba(214, 166, 82, .48);
+  color: var(--home-quote-mark);
   font-size: 1.25rem;
   line-height: 0;
 }
@@ -825,7 +941,7 @@ body:not(.book-active) #sidebar {
 .home-quote cite {
   display: block;
   margin-top: 8px;
-  color: rgba(214, 166, 82, .78);
+  color: var(--home-quote-accent);
   font-family: 'Cinzel', serif;
   font-size: .68rem;
   font-style: normal;
@@ -834,120 +950,11 @@ body:not(.book-active) #sidebar {
   text-transform: uppercase;
 }
 
-:root[data-color-mode="light"] #welcome {
-  color: #231f19;
-  background:
-    radial-gradient(circle at 78% 8%, rgba(194, 142, 62, .18), transparent 34%),
-    radial-gradient(circle at 16% 72%, rgba(72, 101, 135, .12), transparent 34%),
-    linear-gradient(180deg, #fbf7ef 0%, #f1eadf 55%, #e9dece 100%);
-}
-
-:root[data-color-mode="light"] .welcome-bg::before {
-  background:
-    linear-gradient(90deg, rgba(251, 247, 239, .96) 0%, rgba(251, 247, 239, .78) 44%, rgba(251, 247, 239, .38) 72%, rgba(251, 247, 239, .86) 100%),
-    linear-gradient(180deg, rgba(251, 247, 239, .1) 0%, rgba(233, 222, 206, .9) 92%);
-}
-
-:root[data-color-mode="light"] .welcome-bg::after {
-  background-image:
-    linear-gradient(rgba(45, 37, 28, .045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(45, 37, 28, .035) 1px, transparent 1px);
-  opacity: .45;
-}
-
-:root[data-color-mode="light"] .welcome-portrait {
-  opacity: .24;
-  filter: sepia(.18) saturate(.9) contrast(1.02) drop-shadow(0 18px 70px rgba(86, 62, 31, .18));
-}
-
-:root[data-color-mode="light"] .welcome-badge {
-  border-color: rgba(146, 98, 38, .26);
-  background: linear-gradient(180deg, rgba(255, 246, 226, .78), rgba(232, 205, 157, .38));
-  color: #8a5e22;
-  box-shadow: 0 10px 28px rgba(118, 76, 26, .12), inset 0 1px 0 rgba(255, 255, 255, .7);
-}
-
-:root[data-color-mode="light"] .welcome-title h1 {
-  color: #1f1a14;
-  text-shadow: 0 2px 12px rgba(255, 255, 255, .65);
-}
-
-:root[data-color-mode="light"] .welcome-title > p:not(.welcome-copy) {
-  color: rgba(111, 81, 38, .74);
-}
-
-:root[data-color-mode="light"] .welcome-copy {
-  color: rgba(35, 31, 25, .72);
-}
-
-:root[data-color-mode="light"] .welcome-liturgy-link {
-  border-color: rgba(154, 53, 45, .38);
-  background: linear-gradient(180deg, rgba(255, 239, 235, .95), rgba(238, 205, 199, .78));
-  color: #8e3029;
-  box-shadow: 0 12px 30px rgba(118, 60, 44, .12), inset 0 1px 0 rgba(255, 255, 255, .65);
-}
-
-:root[data-color-mode="light"] .welcome-liturgy-link:hover,
-:root[data-color-mode="light"] .welcome-liturgy-link:focus-visible {
-  border-color: rgba(154, 53, 45, .58);
-  background: linear-gradient(180deg, rgba(255, 246, 243, .98), rgba(232, 190, 182, .86));
-  color: #61201b;
-  box-shadow: 0 16px 34px rgba(118, 60, 44, .18), inset 0 1px 0 rgba(255, 255, 255, .75);
-}
-
-:root[data-color-mode="light"] body:not(.book-active):not(.liturgy-active) .liturgy-tab {
-  border-color: rgba(154, 53, 45, .34);
-  background: rgba(255, 239, 235, .72);
-  color: #8e3029;
-}
-
-:root[data-color-mode="light"] body:not(.book-active):not(.liturgy-active) .liturgy-tab:hover {
-  border-color: rgba(154, 53, 45, .54);
-  color: #61201b;
-}
-
-:root[data-color-mode="light"] .book-card {
-  border-color: rgba(45, 37, 28, .18);
-  box-shadow: 0 18px 40px rgba(74, 55, 32, .22);
-}
-
-:root[data-color-mode="light"] .book-card:hover {
-  box-shadow: 0 26px 58px rgba(74, 55, 32, .28);
-}
-
-:root[data-color-mode="light"] .home-feature-strip {
-  border-color: rgba(45, 37, 28, .14);
-  background: linear-gradient(180deg, rgba(255, 252, 246, .82), rgba(244, 236, 224, .78));
-  box-shadow: 0 18px 54px rgba(74, 55, 32, .16), inset 0 1px 0 rgba(255, 255, 255, .7);
-}
-
-:root[data-color-mode="light"] .home-feature + .home-feature {
-  border-left-color: rgba(45, 37, 28, .12);
-}
-
-:root[data-color-mode="light"] .home-feature h2 {
-  color: #5d4321;
-}
-
-:root[data-color-mode="light"] .home-feature p {
-  color: rgba(35, 31, 25, .66);
-}
-
-:root[data-color-mode="light"] .home-quote {
-  color: rgba(35, 31, 25, .56);
-}
-
-:root[data-color-mode="light"] .home-quote p::before,
-:root[data-color-mode="light"] .home-quote p::after,
-:root[data-color-mode="light"] .home-quote cite {
-  color: rgba(129, 87, 34, .72);
-}
-
 @media (max-width: 1100px) {
   .welcome-portrait {
     right: -90px;
     width: min(52vw, 500px);
-    opacity: .32;
+    opacity: calc(var(--home-portrait-opacity) * .76);
   }
 
   .book-cards {
@@ -964,21 +971,11 @@ body:not(.book-active) #sidebar {
   }
 
   .home-feature:nth-child(even) {
-    border-left: 1px solid rgba(255, 255, 255, .1);
+    border-left: 1px solid var(--home-feature-divider);
   }
 
   .home-feature:nth-child(n + 3) {
-    border-top: 1px solid rgba(255, 255, 255, .1);
-  }
-}
-
-@media (max-width: 1100px) {
-  :root[data-color-mode="light"] .home-feature:nth-child(even) {
-    border-left-color: rgba(45, 37, 28, .12);
-  }
-
-  :root[data-color-mode="light"] .home-feature:nth-child(n + 3) {
-    border-top-color: rgba(45, 37, 28, .12);
+    border-top: 1px solid var(--home-feature-divider);
   }
 }
 
@@ -1441,7 +1438,7 @@ body:not(.book-active) #sidebar {
   position: fixed;
   right: 0;
   top: var(--hdr-h);
-  width: clamp(360px, 40vw, 720px);
+  width: var(--comm-panel-active-w, var(--comm-panel-w));
   min-width: 320px;
   max-width: 860px;
   height: calc(100vh - var(--hdr-h));
@@ -1457,6 +1454,12 @@ body:not(.book-active) #sidebar {
   padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
 #comm-panel.open { transform: translateX(0); }
+
+@media (min-width: 769px) {
+  body.commentary-open:not(.commentary-maximized) #main {
+    padding-right: var(--comm-panel-active-w, var(--comm-panel-w));
+  }
+}
 
 #comm-panel.is-maximized {
   left: 0;
@@ -1567,41 +1570,29 @@ body:not(.book-active) #sidebar {
 .comm-maximize-icon {
   position: relative;
   display: block;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+  background:
+    linear-gradient(currentColor, currentColor) left top / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) left top / 2px 8px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 2px 8px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 2px 8px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 2px 8px no-repeat;
 }
 
-.comm-maximize-icon::before,
-.comm-maximize-icon::after {
-  content: '';
-  position: absolute;
-  border: 1.5px solid currentColor;
-  border-radius: 2px;
-}
-
-.comm-maximize-icon::before {
-  inset: 1px;
-}
-
-.comm-maximize-icon::after {
-  display: none;
-}
-
-#comm-panel.is-maximized .comm-maximize-icon::before {
-  width: 10px;
-  height: 10px;
-  left: 1px;
-  top: 5px;
-  right: auto;
-  bottom: auto;
-}
-
-#comm-panel.is-maximized .comm-maximize-icon::after {
-  display: block;
-  width: 10px;
-  height: 10px;
-  left: 5px;
-  top: 1px;
+#comm-panel.is-maximized .comm-maximize-icon {
+  background:
+    linear-gradient(currentColor, currentColor) 0 7px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 7px 0 / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) 11px 7px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 9px 0 / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) 0 9px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 7px 11px / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) 11px 9px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 9px 11px / 2px 7px no-repeat;
 }
 
 #comm-body {
@@ -1672,6 +1663,17 @@ body:not(.book-active) #sidebar {
 .fade-up  { animation: fadeUp .4s ease both; }
 .scale-in { animation: scaleIn .3s ease both; }
 
+/* ---- Tablet (max-width: 900px) ---- */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 184px; }
+
+  .logo-sub { display: none; }
+  .header-divider { display: none; }
+
+  #book-tabs { gap: 2px; }
+  .book-tab { padding: 6px 10px 6px 8px; font-size: .7rem; gap: 6px; }
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
   :root { --sidebar-w: 0px; }
@@ -1687,7 +1689,7 @@ body:not(.book-active) #sidebar {
     top: 32px;
     right: -150px;
     width: 430px;
-    opacity: .18;
+    opacity: calc(var(--home-portrait-opacity) * .43);
   }
   .welcome-shell {
     gap: 20px;
@@ -1717,7 +1719,7 @@ body:not(.book-active) #sidebar {
   .home-feature:nth-child(even),
   .home-feature:nth-child(n + 3) {
     border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, .1);
+    border-top: 1px solid var(--home-feature-divider);
   }
   .home-feature:first-child {
     border-top: none;
@@ -1746,17 +1748,9 @@ body:not(.book-active) #sidebar {
   .liturgy-section { padding: 18px; }
   .liturgy-two-col { grid-template-columns: 1fr; }
   #book-tabs .book-tab span:not(.tab-symbol) { display: none; }
+}
 
 /* ---- Tablet (≤ 900px) ---- */
-@media (max-width: 900px) {
-  :root { --sidebar-w: 200px; }
-
-  .logo-sub    { display: none; }
-  .header-divider { display: none; }
-
-  #book-tabs { gap: 2px; }
-  .book-tab  { padding: 6px 10px 6px 8px; font-size: .7rem; gap: 6px; }
-}
 
 /* ---- Mobile (≤ 600px) ---- */
 @media (max-width: 600px) {
@@ -1938,16 +1932,14 @@ body:not(.book-active) #sidebar {
   }
 
   .welcome-bg::before {
-    background:
-      linear-gradient(90deg, rgba(7, 8, 10, .96) 0%, rgba(7, 8, 10, .82) 62%, rgba(7, 8, 10, .58) 100%),
-      linear-gradient(180deg, rgba(7, 8, 10, .1) 0%, rgba(7, 8, 10, .94) 88%);
+    background: var(--home-overlay-mobile);
   }
 
   .welcome-portrait {
     top: 70px;
     right: -135px;
     width: 330px;
-    opacity: .16;
+    opacity: calc(var(--home-portrait-opacity) * .38);
   }
 
   /* ── Book cards: responsive grid ── */
@@ -2215,32 +2207,6 @@ body:not(.book-active) #sidebar {
   .illuminated {
     font-size: 2.2rem;
     margin-right: 3px;
-  }
-}
-
-:root[data-color-mode="light"] .home-feature:nth-child(even),
-:root[data-color-mode="light"] .home-feature:nth-child(n + 3) {
-  border-color: rgba(45, 37, 28, .12);
-}
-
-@media (max-width: 768px) {
-  :root[data-color-mode="light"] .home-feature,
-  :root[data-color-mode="light"] .home-feature:nth-child(even),
-  :root[data-color-mode="light"] .home-feature:nth-child(n + 3) {
-    border-left: none;
-    border-top-color: rgba(45, 37, 28, .12);
-  }
-
-  :root[data-color-mode="light"] .home-feature:first-child {
-    border-top: none;
-  }
-}
-
-@media (max-width: 600px) {
-  :root[data-color-mode="light"] .welcome-bg::before {
-    background:
-      linear-gradient(90deg, rgba(251, 247, 239, .96) 0%, rgba(251, 247, 239, .82) 62%, rgba(251, 247, 239, .58) 100%),
-      linear-gradient(180deg, rgba(251, 247, 239, .1) 0%, rgba(233, 222, 206, .94) 88%);
   }
 }
 

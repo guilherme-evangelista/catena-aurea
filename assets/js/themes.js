@@ -22,6 +22,12 @@ const BOOK_THEMES = {
     gold:   '#d4e07a',
     symbol: '#d4e07a',
     glow:   'rgba(77, 175, 122, .18)',
+    light: {
+      accent: '#1f7653',
+      gold:   '#386f28',
+      symbol: '#2f6f3d',
+      glow:   'rgba(31, 118, 83, .18)',
+    },
   },
   lucas: {
     bg1:    '#3b2800',
@@ -55,11 +61,14 @@ const BOOK_META = {
  */
 function applyTheme(bookKey) {
   const t = BOOK_THEMES[bookKey];
+  const mode = document.documentElement.dataset.colorMode === 'light' ? 'light' : 'dark';
+  const palette = { ...t, ...(t[mode] || {}) };
   const r = document.documentElement.style;
-  r.setProperty('--book-bg1',    t.bg1);
-  r.setProperty('--book-bg2',    t.bg2);
-  r.setProperty('--book-accent', t.accent);
-  r.setProperty('--book-gold',   t.gold);
-  r.setProperty('--book-symbol', t.symbol || t.gold);
-  r.setProperty('--book-glow',   t.glow);
+  document.documentElement.dataset.bookTheme = bookKey;
+  r.setProperty('--book-bg1',    palette.bg1);
+  r.setProperty('--book-bg2',    palette.bg2);
+  r.setProperty('--book-accent', palette.accent);
+  r.setProperty('--book-gold',   palette.gold);
+  r.setProperty('--book-symbol', palette.symbol || palette.gold);
+  r.setProperty('--book-glow',   palette.glow);
 }
