@@ -71,9 +71,7 @@ const CatenaDOM = (() => {
   function setLogoSymbol(bookKey) {
     if (!refs.logoMark) return;
     const key = SYMBOLS[bookKey] ? bookKey : 'mateus';
-    const theme = BOOK_THEMES[key] || BOOK_THEMES.mateus;
-    const color = theme.symbol || theme.gold;
-    refs.logoMark.innerHTML = `<span class="logo-symbol" style="color:${color}" aria-hidden="true">${SYMBOLS[key]}</span>`;
+    refs.logoMark.innerHTML = `<span class="logo-symbol" style="color:var(--book-symbol)" aria-hidden="true">${SYMBOLS[key]}</span>`;
   }
 
   return {

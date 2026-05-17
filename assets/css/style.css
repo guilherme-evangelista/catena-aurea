@@ -13,6 +13,71 @@
   --text-dim:    rgba(232, 230, 224, .55);
   --text-faint:  rgba(232, 230, 224, .32);
 
+  --home-header-bg: rgba(8, 9, 12, .94);
+  --home-header-border: rgba(255, 255, 255, .12);
+  --home-header-text: #e8e6e0;
+  --home-header-text-dim: rgba(232, 230, 224, .58);
+  --home-header-text-faint: rgba(232, 230, 224, .36);
+  --home-header-border-soft: rgba(255, 255, 255, .1);
+  --home-header-border-strong: rgba(255, 255, 255, .16);
+
+  --home-bg:
+    radial-gradient(circle at 78% 8%, rgba(170, 117, 42, .18), transparent 34%),
+    radial-gradient(circle at 16% 72%, rgba(64, 94, 135, .16), transparent 34%),
+    linear-gradient(180deg, #111114 0%, #090a0d 52%, #07080a 100%);
+  --home-text: #eee9de;
+  --home-heading: #f6f3ec;
+  --home-heading-shadow: 0 5px 24px rgba(0, 0, 0, .65);
+  --home-kicker: rgba(222, 184, 124, .72);
+  --home-copy: rgba(238, 233, 222, .7);
+  --home-overlay:
+    linear-gradient(90deg, rgba(7, 8, 10, .98) 0%, rgba(7, 8, 10, .8) 44%, rgba(7, 8, 10, .36) 72%, rgba(7, 8, 10, .88) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, .18) 0%, rgba(7, 8, 10, .92) 92%);
+  --home-overlay-mobile:
+    linear-gradient(90deg, rgba(7, 8, 10, .96) 0%, rgba(7, 8, 10, .82) 62%, rgba(7, 8, 10, .58) 100%),
+    linear-gradient(180deg, rgba(7, 8, 10, .1) 0%, rgba(7, 8, 10, .94) 88%);
+  --home-grid-line-a: rgba(255, 255, 255, .025);
+  --home-grid-line-b: rgba(255, 255, 255, .018);
+  --home-grid-opacity: .22;
+  --home-portrait-opacity: .42;
+  --home-portrait-filter: sepia(.16) saturate(.95) contrast(1.08) drop-shadow(0 18px 80px rgba(212, 160, 48, .18));
+  --home-badge-border: rgba(216, 168, 87, .28);
+  --home-badge-bg: linear-gradient(180deg, rgba(131, 91, 32, .42), rgba(83, 54, 17, .26));
+  --home-badge-text: #e0b46d;
+  --home-badge-shadow: 0 12px 38px rgba(171, 110, 35, .18), inset 0 1px 0 rgba(255, 255, 255, .08);
+  --home-action-border: color-mix(in srgb, var(--book-accent) 58%, transparent);
+  --home-action-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-bg2) 74%, rgba(255, 255, 255, .08)),
+    color-mix(in srgb, var(--book-bg1) 78%, rgba(0, 0, 0, .4))
+  );
+  --home-action-text: color-mix(in srgb, var(--book-symbol) 74%, #fff 26%);
+  --home-action-shadow: 0 14px 38px color-mix(in srgb, var(--book-accent) 24%, transparent), inset 0 1px 0 rgba(255, 255, 255, .08);
+  --home-action-hover-border: color-mix(in srgb, var(--book-symbol) 80%, #fff 8%);
+  --home-action-hover-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-bg2) 86%, rgba(255, 255, 255, .12)),
+    color-mix(in srgb, var(--book-bg1) 86%, rgba(0, 0, 0, .34))
+  );
+  --home-action-hover-text: color-mix(in srgb, var(--book-symbol) 58%, #fff 42%);
+  --home-action-hover-shadow: 0 18px 44px color-mix(in srgb, var(--book-accent) 34%, transparent), inset 0 1px 0 rgba(255, 255, 255, .12);
+  --home-card-border: rgba(255, 255, 255, .13);
+  --home-card-shadow: 0 18px 42px rgba(0, 0, 0, .52);
+  --home-card-hover-shadow: 0 28px 70px rgba(0, 0, 0, .68);
+  --home-card-glow:
+    radial-gradient(circle at 50% 18%, rgba(214, 166, 82, .16), transparent 33%),
+    linear-gradient(180deg, rgba(0, 0, 0, .08) 0%, rgba(0, 0, 0, .04) 42%, rgba(0, 0, 0, .72) 82%, rgba(0, 0, 0, .92) 100%);
+  --home-card-text-shadow: 0 2px 10px rgba(0, 0, 0, .76);
+  --home-panel-border: rgba(255, 255, 255, .14);
+  --home-panel-bg: linear-gradient(180deg, rgba(23, 24, 28, .78), rgba(13, 14, 17, .74));
+  --home-panel-shadow: 0 18px 64px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255, 255, 255, .05);
+  --home-panel-heading: #e8cf9f;
+  --home-panel-text: rgba(238, 233, 222, .58);
+  --home-feature-divider: rgba(255, 255, 255, .1);
+  --home-quote: rgba(238, 233, 222, .52);
+  --home-quote-accent: rgba(214, 166, 82, .78);
+  --home-quote-mark: rgba(214, 166, 82, .48);
+
   /* Book accent colours — overridden via JS per active book */
   --book-bg1:    #1a2744;
   --book-bg2:    #243662;
@@ -22,7 +87,8 @@
   --book-glow:   rgba(106, 143, 216, .18);
 
   --hdr-h:   64px;
-  --sidebar-w: 260px;
+  --sidebar-w: 224px;
+  --comm-panel-w: clamp(360px, 40vw, 720px);
   --radius:  10px;
   --radius-lg: 16px;
   --transition: .2s ease;
@@ -34,14 +100,79 @@
 
 :root[data-color-mode="light"] {
   color-scheme: light;
-  --bg:          #f4f0e8;
-  --surface:     #fbf7ef;
-  --surface2:    #ede6d9;
-  --border:      rgba(45, 37, 28, .12);
-  --border2:     rgba(45, 37, 28, .2);
-  --text:        #231f19;
-  --text-dim:    rgba(35, 31, 25, .68);
-  --text-faint:  rgba(35, 31, 25, .42);
+  --bg:          #eee2d0;
+  --surface:     #fff9ef;
+  --surface2:    #e6d5bd;
+  --border:      rgba(43, 31, 20, .22);
+  --border2:     rgba(43, 31, 20, .34);
+  --text:        #17130e;
+  --text-dim:    rgba(23, 19, 14, .78);
+  --text-faint:  rgba(23, 19, 14, .58);
+
+  --home-header-bg: rgba(239, 228, 211, .94);
+  --home-header-border: rgba(43, 31, 20, .2);
+  --home-header-text: #17130e;
+  --home-header-text-dim: rgba(23, 19, 14, .76);
+  --home-header-text-faint: rgba(23, 19, 14, .54);
+  --home-header-border-soft: rgba(43, 31, 20, .18);
+  --home-header-border-strong: rgba(43, 31, 20, .28);
+
+  --home-bg:
+    radial-gradient(circle at 78% 8%, rgba(164, 102, 22, .2), transparent 34%),
+    radial-gradient(circle at 14% 76%, rgba(42, 70, 104, .14), transparent 34%),
+    linear-gradient(180deg, #f5efe5 0%, #ebddca 55%, #dec8aa 100%);
+  --home-text: #17130e;
+  --home-heading: #100d09;
+  --home-heading-shadow: 0 2px 0 rgba(255, 255, 255, .8), 0 12px 28px rgba(62, 43, 24, .14);
+  --home-kicker: #6b4316;
+  --home-copy: #2b231a;
+  --home-overlay:
+    linear-gradient(90deg, rgba(245, 239, 229, .96) 0%, rgba(245, 239, 229, .84) 46%, rgba(245, 239, 229, .54) 72%, rgba(245, 239, 229, .88) 100%),
+    linear-gradient(180deg, rgba(245, 239, 229, .18) 0%, rgba(222, 200, 170, .86) 94%);
+  --home-overlay-mobile:
+    linear-gradient(90deg, rgba(245, 239, 229, .97) 0%, rgba(245, 239, 229, .88) 62%, rgba(245, 239, 229, .68) 100%),
+    linear-gradient(180deg, rgba(245, 239, 229, .18) 0%, rgba(222, 200, 170, .92) 88%);
+  --home-grid-line-a: rgba(43, 31, 20, .07);
+  --home-grid-line-b: rgba(43, 31, 20, .055);
+  --home-grid-opacity: .52;
+  --home-portrait-opacity: .34;
+  --home-portrait-filter: sepia(.2) saturate(.92) contrast(1.08) drop-shadow(0 18px 70px rgba(80, 54, 26, .2));
+  --home-badge-border: rgba(107, 67, 22, .42);
+  --home-badge-bg: linear-gradient(180deg, rgba(255, 246, 226, .96), rgba(218, 174, 104, .36));
+  --home-badge-text: #6b4316;
+  --home-badge-shadow: 0 10px 28px rgba(111, 77, 36, .14), inset 0 1px 0 rgba(255, 255, 255, .78);
+  --home-action-border: color-mix(in srgb, var(--book-accent) 62%, rgba(23, 19, 14, .24));
+  --home-action-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-accent) 14%, #fff9ef),
+    color-mix(in srgb, var(--book-accent) 24%, #e6d5bd)
+  );
+  --home-action-text: var(--book-bg2);
+  --home-action-shadow: 0 12px 30px color-mix(in srgb, var(--book-accent) 22%, transparent), inset 0 1px 0 rgba(255, 255, 255, .72);
+  --home-action-hover-border: color-mix(in srgb, var(--book-accent) 78%, rgba(23, 19, 14, .22));
+  --home-action-hover-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--book-accent) 18%, #fffdf8),
+    color-mix(in srgb, var(--book-accent) 32%, #e6d5bd)
+  );
+  --home-action-hover-text: var(--book-bg1);
+  --home-action-hover-shadow: 0 16px 36px color-mix(in srgb, var(--book-accent) 28%, transparent), inset 0 1px 0 rgba(255, 255, 255, .8);
+  --home-card-border: rgba(43, 31, 20, .24);
+  --home-card-shadow: 0 20px 46px rgba(70, 48, 24, .28);
+  --home-card-hover-shadow: 0 28px 64px rgba(70, 48, 24, .34);
+  --home-card-glow:
+    radial-gradient(circle at 50% 18%, rgba(214, 166, 82, .12), transparent 32%),
+    linear-gradient(180deg, rgba(0, 0, 0, .18) 0%, rgba(0, 0, 0, .12) 42%, rgba(0, 0, 0, .78) 80%, rgba(0, 0, 0, .95) 100%);
+  --home-card-text-shadow: 0 2px 12px rgba(0, 0, 0, .9);
+  --home-panel-border: rgba(43, 31, 20, .22);
+  --home-panel-bg: linear-gradient(180deg, rgba(255, 251, 243, .96), rgba(232, 216, 192, .92));
+  --home-panel-shadow: 0 18px 54px rgba(70, 48, 24, .18), inset 0 1px 0 rgba(255, 255, 255, .78);
+  --home-panel-heading: #4d2f0c;
+  --home-panel-text: #31281f;
+  --home-feature-divider: rgba(43, 31, 20, .16);
+  --home-quote: rgba(33, 26, 19, .72);
+  --home-quote-accent: rgba(103, 67, 19, .86);
+  --home-quote-mark: rgba(103, 67, 19, .62);
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
@@ -88,7 +219,18 @@ html, body {
   padding-top: max(0px, env(safe-area-inset-top));
 }
 :root[data-color-mode="light"] #header {
-  background: rgba(244, 240, 232, .92);
+  background: rgba(239, 228, 211, .94);
+  border-bottom-color: var(--border);
+}
+
+body:not(.book-active):not(.liturgy-active) #header {
+  --text: var(--home-header-text);
+  --text-dim: var(--home-header-text-dim);
+  --text-faint: var(--home-header-text-faint);
+  --border: var(--home-header-border-soft);
+  --border2: var(--home-header-border-strong);
+  background: var(--home-header-bg);
+  border-bottom-color: var(--home-header-border);
 }
 
 .logo-btn {
@@ -139,15 +281,13 @@ html, body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1.5px solid var(--book-accent);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--book-accent);
-  padding: 2px;
+  padding: 0;
   flex-shrink: 0;
   transition: all .4s;
-  box-shadow: 0 0 16px var(--book-glow);
 }
 
 .logo-symbol {
@@ -159,7 +299,7 @@ html, body {
 .logo-symbol .evangelist-symbol {
   width: 100%;
   height: 100%;
-  transform: scale(1.1);
+  transform: scale(1.2);
   transform-origin: center;
 }
 
@@ -280,6 +420,16 @@ html, body {
 .liturgy-tab {
   margin-left: auto;
 }
+body:not(.book-active):not(.liturgy-active) .liturgy-tab {
+  border: 1px solid var(--home-action-border);
+  background: var(--home-action-bg);
+  color: var(--home-action-text);
+  padding-inline: 18px;
+}
+body:not(.book-active):not(.liturgy-active) .liturgy-tab:hover {
+  border-color: var(--home-action-hover-border);
+  color: var(--home-action-hover-text);
+}
 .liturgy-symbol {
   display: inline-flex;
   align-items: center;
@@ -337,7 +487,7 @@ body:not(.book-active) #sidebar {
 }
 
 .sidebar-header {
-  padding: 16px 16px 10px;
+  padding: 14px 14px 8px;
   font-family: 'Inter', sans-serif;
   font-size: .6rem;
   font-weight: 500;
@@ -348,7 +498,7 @@ body:not(.book-active) #sidebar {
   flex-shrink: 0;
 }
 
-#chapter-list { padding: 6px 0; flex: 1; }
+#chapter-list { padding: 3px 0; flex: 1; }
 
 .ch-btn {
   display: flex;
@@ -358,13 +508,13 @@ body:not(.book-active) #sidebar {
   background: none;
   border: none;
   border-left: 2px solid transparent;
-  padding: 7px 16px;
+  padding: 5px 14px;
   font-family: 'Lora', serif;
-  font-size: .88rem;
+  font-size: .84rem;
   color: var(--text-dim);
   cursor: pointer;
   transition: all .15s;
-  min-height: 44px;
+  min-height: 38px;
   touch-action: manipulation;
 }
 .ch-btn:hover { color: var(--text); background: rgba(255, 255, 255, .04); }
@@ -398,81 +548,175 @@ body:not(.book-active) #sidebar {
   overflow-y: auto;
   background: var(--bg);
   position: relative;
+  transition: background .4s, padding-right .35s cubic-bezier(.4, 0, .2, 1);
 }
 
 /* ── Welcome / Book gallery ─────────────────────────────────── */
 #welcome {
+  position: relative;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 32px;
-  gap: 32px;
+  min-height: 100%;
+  padding: clamp(24px, 4vh, 46px) 28px 28px;
+  overflow: hidden;
+  background: var(--home-bg);
+  color: var(--home-text);
 }
 
-.welcome-title { text-align: center; }
+.welcome-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.welcome-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--home-overlay);
+  z-index: 1;
+}
+
+.welcome-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--home-grid-line-a) 1px, transparent 1px),
+    linear-gradient(90deg, var(--home-grid-line-b) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: var(--home-grid-opacity);
+  z-index: 2;
+}
+
+.welcome-portrait {
+  position: absolute;
+  top: -10px;
+  right: max(-18px, calc((100vw - 1280px) / 2 - 30px));
+  width: min(44vw, 560px);
+  height: auto;
+  opacity: var(--home-portrait-opacity);
+  filter: var(--home-portrait-filter);
+  transform: translateY(-1%);
+}
+
+.welcome-shell {
+  position: relative;
+  z-index: 3;
+  width: min(100%, 1180px);
+  min-width: 0;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(18px, 3vh, 30px);
+}
+
+.welcome-title {
+  text-align: center;
+  width: min(100%, 980px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 34px;
+  padding: 0 18px;
+  border: 1px solid var(--home-badge-border);
+  border-radius: 999px;
+  background: var(--home-badge-bg);
+  color: var(--home-badge-text);
+  box-shadow: var(--home-badge-shadow);
+  font-family: 'Cinzel', serif;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
 .welcome-title h1 {
   font-family: 'Cinzel', serif;
-  font-size: clamp(1.4rem, 3vw, 2rem);
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: .1em;
-  margin-bottom: 4px;
+  font-size: clamp(2.9rem, 5.4vw, 5rem);
+  font-weight: 600;
+  color: var(--home-heading);
+  letter-spacing: .07em;
+  line-height: .95;
+  margin-bottom: 14px;
+  text-shadow: var(--home-heading-shadow);
 }
-.welcome-title p {
+
+.welcome-title > p:not(.welcome-copy) {
   font-family: 'Inter', sans-serif;
-  font-size: .8rem;
-  color: var(--text-faint);
-  letter-spacing: .18em;
+  font-size: clamp(.72rem, 1.3vw, .92rem);
+  color: var(--home-kicker);
+  letter-spacing: .36em;
   text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.welcome-copy {
+  max-width: 570px;
+  color: var(--home-copy);
+  font-size: clamp(.92rem, 1.25vw, 1.08rem);
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+.welcome-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 22px;
 }
 
 .welcome-liturgy-link {
   appearance: none;
-  border: 1px solid color-mix(in srgb, var(--book-accent) 48%, transparent);
-  background: color-mix(in srgb, var(--book-accent) 10%, transparent);
-  color: var(--book-accent);
-  min-height: 42px;
-  padding: 0 18px;
-  border-radius: 999px;
+  border: 1px solid var(--home-action-border);
+  background: var(--home-action-bg);
+  color: var(--home-action-text);
+  min-height: 46px;
+  min-width: 210px;
+  padding: 0 22px;
+  border-radius: 9px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  font-family: 'Inter', sans-serif;
-  font-size: .72rem;
-  font-weight: 500;
-  letter-spacing: .16em;
+  gap: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .18em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: border-color .2s, background .2s, color .2s, transform .2s;
+  box-shadow: var(--home-action-shadow);
+  transition: border-color .2s, background .2s, color .2s, transform .2s, box-shadow .2s;
 }
 
 .welcome-liturgy-link:hover,
 .welcome-liturgy-link:focus-visible {
-  border-color: var(--book-accent);
-  background: color-mix(in srgb, var(--book-accent) 16%, transparent);
-  color: var(--text);
-  transform: translateY(-1px);
+  border-color: var(--home-action-hover-border);
+  background: var(--home-action-hover-bg);
+  color: var(--home-action-hover-text);
+  transform: translateY(-2px);
+  box-shadow: var(--home-action-hover-shadow);
   outline: none;
 }
 
-:root[data-color-mode="light"] .welcome-liturgy-link {
-  border-color: color-mix(in srgb, var(--book-accent) 36%, var(--border2));
-  background: color-mix(in srgb, var(--surface2) 82%, white);
-  color: var(--book-accent);
-  box-shadow: 0 1px 0 rgba(45, 37, 28, .06);
-}
-
-:root[data-color-mode="light"] .welcome-liturgy-link:hover,
-:root[data-color-mode="light"] .welcome-liturgy-link:focus-visible {
-  border-color: color-mix(in srgb, var(--book-accent) 58%, var(--border2));
-  background: color-mix(in srgb, var(--book-accent) 12%, var(--surface));
-  color: var(--text);
-}
-
 .welcome-liturgy-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
   font-size: .9rem;
   line-height: 1;
 }
@@ -480,25 +724,29 @@ body:not(.book-active) #sidebar {
 .book-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: clamp(18px, 2.3vw, 28px);
   width: 100%;
-  max-width: 900px;
+  min-width: 0;
+  max-width: 860px;
+  margin-top: 2px;
 }
 
 .book-card {
   position: relative;
-  border-radius: var(--radius-lg);
+  border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform .3s, box-shadow .3s;
-  aspect-ratio: 2 / 3;
-  border: 1px solid var(--border);
-  color: inherit;
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--home-card-border);
+  color: #f7efe1;
   text-decoration: none;
+  box-shadow: var(--home-card-shadow);
+  isolation: isolate;
 }
 .book-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .7);
+  transform: translateY(-7px);
+  box-shadow: var(--home-card-hover-shadow);
 }
 
 .book-card-bg {
@@ -507,60 +755,228 @@ body:not(.book-active) #sidebar {
   background-size: cover;
   background-position: center top;
   transition: transform .4s;
+  z-index: 0;
 }
-.book-card:hover .book-card-bg { transform: scale(1.06); }
+.book-card:hover .book-card-bg { transform: scale(1.045); }
 
-.book-card-overlay {
+.book-card-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, .95) 0%,
-    rgba(0, 0, 0, .5) 45%,
-    rgba(0, 0, 0, .1) 100%
-  );
+  background: var(--home-card-glow);
+  z-index: 1;
+}
+
+.book-card-frame {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  opacity: .42;
+  z-index: 2;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.28);
 }
 
 .book-card-body {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 16px 14px;
+  inset: 0;
+  z-index: 3;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: left;
+  gap: 4px;
+  text-shadow: var(--home-card-text-shadow);
 }
 
-.book-card-symbol {
-  width: 28px;
-  height: 28px;
-  margin-bottom: 2px;
-  filter: drop-shadow(0 0 5px color-mix(in srgb, currentColor 55%, transparent));
+.book-card-eyebrow {
+  display: none;
+  font-family: 'Cinzel', serif;
+  font-size: .56rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(250, 230, 190, .74);
 }
 
 .book-card-vol {
-  font-family: 'Inter', sans-serif;
-  font-size: .62rem;
-  font-weight: 400;
-  letter-spacing: .22em;
+  font-family: 'Cinzel', serif;
+  align-self: stretch;
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .24em;
   text-transform: uppercase;
-  opacity: .7;
-  color: #fff;
+  margin: 0;
+  opacity: .82;
 }
 
 .book-card-name {
   font-family: 'Cinzel', serif;
-  font-size: .95rem;
+  align-self: stretch;
+  font-size: clamp(.84rem, 1vw, 1.02rem);
   font-weight: 700;
-  color: #fff;
-  line-height: 1.2;
+  color: #fff7e8;
+  line-height: 1.12;
+  margin-bottom: 8px;
 }
 
 .book-card-cta {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px;
+  background: rgba(0,0,0,.2);
+  display: grid;
+  grid-template-columns: 26px 1fr 16px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px 5px 6px;
   font-family: 'Inter', sans-serif;
+  font-size: .66rem;
+  color: rgba(255, 241, 215, .76);
+  letter-spacing: .04em;
+  text-align: left;
+  backdrop-filter: blur(5px);
+}
+
+.book-card-cta-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.book-card-symbol {
+  width: 26px;
+  height: 26px;
+  padding: 3px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, currentColor 55%, transparent));
+}
+
+.home-feature-strip {
+  width: min(100%, 980px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--home-panel-border);
+  border-radius: 14px;
+  background: var(--home-panel-bg);
+  box-shadow: var(--home-panel-shadow);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.home-feature {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 14px;
+  padding: 22px 24px;
+  align-items: center;
+  min-width: 0;
+}
+
+.home-feature + .home-feature {
+  border-left: 1px solid var(--home-feature-divider);
+}
+
+.home-feature-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.home-feature-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.home-feature h2 {
+  font-family: 'Cinzel', serif;
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--home-panel-heading);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.home-feature p {
+  font-size: .75rem;
+  line-height: 1.42;
+  color: var(--home-panel-text);
+}
+
+.home-quote {
+  text-align: center;
+  color: var(--home-quote);
+  margin-top: -2px;
+  font-style: italic;
+}
+
+.home-quote p {
+  font-size: .95rem;
+  line-height: 1.45;
+}
+
+.home-quote p::before,
+.home-quote p::after {
+  color: var(--home-quote-mark);
+  font-size: 1.25rem;
+  line-height: 0;
+}
+
+.home-quote p::before { content: open-quote; margin-right: 10px; }
+.home-quote p::after { content: close-quote; margin-left: 10px; }
+
+.home-quote cite {
+  display: block;
+  margin-top: 8px;
+  color: var(--home-quote-accent);
+  font-family: 'Cinzel', serif;
   font-size: .68rem;
-  color: rgba(255, 255, 255, .5);
-  letter-spacing: .1em;
-  margin-top: 2px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1100px) {
+  .welcome-portrait {
+    right: -90px;
+    width: min(52vw, 500px);
+    opacity: calc(var(--home-portrait-opacity) * .76);
+  }
+
+  .book-cards {
+    max-width: 820px;
+  }
+
+  .home-feature-strip {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 820px;
+  }
+
+  .home-feature + .home-feature {
+    border-left: none;
+  }
+
+  .home-feature:nth-child(even) {
+    border-left: 1px solid var(--home-feature-divider);
+  }
+
+  .home-feature:nth-child(n + 3) {
+    border-top: 1px solid var(--home-feature-divider);
+  }
 }
 
 /* ── Chapter view ───────────────────────────────────────────── */
@@ -1022,7 +1438,7 @@ body:not(.book-active) #sidebar {
   position: fixed;
   right: 0;
   top: var(--hdr-h);
-  width: clamp(360px, 40vw, 720px);
+  width: var(--comm-panel-active-w, var(--comm-panel-w));
   min-width: 320px;
   max-width: 860px;
   height: calc(100vh - var(--hdr-h));
@@ -1038,6 +1454,12 @@ body:not(.book-active) #sidebar {
   padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
 #comm-panel.open { transform: translateX(0); }
+
+@media (min-width: 769px) {
+  body.commentary-open:not(.commentary-maximized) #main {
+    padding-right: var(--comm-panel-active-w, var(--comm-panel-w));
+  }
+}
 
 #comm-panel.is-maximized {
   left: 0;
@@ -1148,41 +1570,29 @@ body:not(.book-active) #sidebar {
 .comm-maximize-icon {
   position: relative;
   display: block;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+  background:
+    linear-gradient(currentColor, currentColor) left top / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) left top / 2px 8px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 2px 8px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 2px 8px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 8px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 2px 8px no-repeat;
 }
 
-.comm-maximize-icon::before,
-.comm-maximize-icon::after {
-  content: '';
-  position: absolute;
-  border: 1.5px solid currentColor;
-  border-radius: 2px;
-}
-
-.comm-maximize-icon::before {
-  inset: 1px;
-}
-
-.comm-maximize-icon::after {
-  display: none;
-}
-
-#comm-panel.is-maximized .comm-maximize-icon::before {
-  width: 10px;
-  height: 10px;
-  left: 1px;
-  top: 5px;
-  right: auto;
-  bottom: auto;
-}
-
-#comm-panel.is-maximized .comm-maximize-icon::after {
-  display: block;
-  width: 10px;
-  height: 10px;
-  left: 5px;
-  top: 1px;
+#comm-panel.is-maximized .comm-maximize-icon {
+  background:
+    linear-gradient(currentColor, currentColor) 0 7px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 7px 0 / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) 11px 7px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 9px 0 / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) 0 9px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 7px 11px / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) 11px 9px / 7px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 9px 11px / 2px 7px no-repeat;
 }
 
 #comm-body {
@@ -1253,6 +1663,17 @@ body:not(.book-active) #sidebar {
 .fade-up  { animation: fadeUp .4s ease both; }
 .scale-in { animation: scaleIn .3s ease both; }
 
+/* ---- Tablet (max-width: 900px) ---- */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 184px; }
+
+  .logo-sub { display: none; }
+  .header-divider { display: none; }
+
+  #book-tabs { gap: 2px; }
+  .book-tab { padding: 6px 10px 6px 8px; font-size: .7rem; gap: 6px; }
+}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 768px) {
   :root { --sidebar-w: 0px; }
@@ -1260,7 +1681,49 @@ body:not(.book-active) #sidebar {
   #comm-panel { width: 100%; top: var(--hdr-h); }
   #chapter-view { padding: 24px 20px 60px; }
   #liturgy-view { padding: 18px 16px 60px; }
-  .book-cards { grid-template-columns: repeat(2, 1fr); }
+  #welcome {
+    justify-content: flex-start;
+    padding: 28px 18px 38px;
+  }
+  .welcome-portrait {
+    top: 32px;
+    right: -150px;
+    width: 430px;
+    opacity: calc(var(--home-portrait-opacity) * .43);
+  }
+  .welcome-shell {
+    gap: 20px;
+  }
+  .welcome-title h1 {
+    font-size: clamp(2.35rem, 10vw, 4rem);
+  }
+  .welcome-title > p:not(.welcome-copy) {
+    letter-spacing: .24em;
+  }
+  .welcome-actions {
+    width: min(100%, 440px);
+  }
+  .welcome-liturgy-link {
+    flex: 1 1 190px;
+    min-width: 0;
+  }
+  .book-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 480px;
+  }
+  .home-feature-strip {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
+  .home-feature,
+  .home-feature:nth-child(even),
+  .home-feature:nth-child(n + 3) {
+    border-left: none;
+    border-top: 1px solid var(--home-feature-divider);
+  }
+  .home-feature:first-child {
+    border-top: none;
+  }
   .liturgy-tab { margin-left: 0; }
   .liturgy-tab .tab-label { display: none; }
   .theme-mode-btn {
@@ -1285,17 +1748,9 @@ body:not(.book-active) #sidebar {
   .liturgy-section { padding: 18px; }
   .liturgy-two-col { grid-template-columns: 1fr; }
   #book-tabs .book-tab span:not(.tab-symbol) { display: none; }
+}
 
 /* ---- Tablet (≤ 900px) ---- */
-@media (max-width: 900px) {
-  :root { --sidebar-w: 200px; }
-
-  .logo-sub    { display: none; }
-  .header-divider { display: none; }
-
-  #book-tabs { gap: 2px; }
-  .book-tab  { padding: 6px 10px 6px 8px; font-size: .7rem; gap: 6px; }
-}
 
 /* ---- Mobile (≤ 600px) ---- */
 @media (max-width: 600px) {
@@ -1421,46 +1876,116 @@ body:not(.book-active) #sidebar {
 
   /* ── Welcome screen: center content ── */
   #welcome {
-    padding: 20px 16px;
-    gap: 24px;
+    padding: 22px 14px 34px;
+    gap: 0;
     min-height: calc(100dvh - var(--hdr-h));
   }
 
   .welcome-title {
-    padding: 0 8px;
+    padding: 0;
+    width: 100%;
   }
 
   .welcome-title h1 {
-    font-size: clamp(1.3rem, 6vw, 1.8rem);
-    margin-bottom: 8px;
+    max-width: 100%;
+    font-size: clamp(1.6rem, 8vw, 2.05rem);
+    letter-spacing: .03em;
+    margin-bottom: 10px;
+    text-wrap: balance;
   }
 
-  .welcome-title p {
-    font-size: .68rem;
+  .welcome-title > p:not(.welcome-copy) {
+    max-width: 34ch;
+    font-size: .56rem;
+    letter-spacing: .1em;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .welcome-copy {
+    max-width: 34ch;
+    font-size: .86rem;
+    line-height: 1.48;
+  }
+
+  .welcome-badge {
+    min-height: 30px;
+    padding-inline: 14px;
+    font-size: .56rem;
+    letter-spacing: .15em;
+  }
+
+  .welcome-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 18px;
+    width: min(100%, 330px);
+  }
+
+  .welcome-liturgy-link {
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    font-size: .67rem;
+  }
+
+  .welcome-bg::before {
+    background: var(--home-overlay-mobile);
+  }
+
+  .welcome-portrait {
+    top: 70px;
+    right: -135px;
+    width: 330px;
+    opacity: calc(var(--home-portrait-opacity) * .38);
   }
 
   /* ── Book cards: responsive grid ── */
   .book-cards {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     width: 100%;
-    max-width: 100%;
-    padding: 0 4px;
+    max-width: 390px;
+    padding: 0;
   }
 
   .book-card {
     border-radius: 8px;
-    aspect-ratio: 2.2 / 3;
+    aspect-ratio: 3 / 4.15;
+  }
+
+  .book-card-body {
+    padding: 10px;
+    gap: 3px;
   }
 
   .book-card-symbol {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
 
-  .book-card-name { font-size: .78rem; }
+  .book-card-eyebrow { font-size: .48rem; }
+  .book-card-name { font-size: .86rem; }
   .book-card-vol  { font-size: .52rem; }
-  .book-card-cta  { display: none; }
+  .book-card-cta  {
+    display: grid;
+    min-height: 32px;
+    grid-template-columns: 22px 1fr 12px;
+    gap: 5px;
+    padding: 4px 8px 4px 5px;
+    font-size: .56rem;
+  }
+
+  .book-card-cta-label {
+    font-size: 0;
+  }
+
+  .book-card-cta-label::after {
+    content: attr(data-short-label);
+    font-size: .56rem;
+  }
 
   /* ── Chapter view ── */
   #chapter-view {
@@ -1620,21 +2145,49 @@ body:not(.book-active) #sidebar {
   .tab-symbol { width: 14px; height: 14px; }
 
   #welcome {
-    padding: 16px 12px;
-    gap: 16px;
+    padding: 18px 10px 28px;
+    gap: 0;
   }
 
   .welcome-title h1 {
-    font-size: 1.2rem;
+    font-size: 1.95rem;
+  }
+
+  .welcome-title > p:not(.welcome-copy) {
+    font-size: .56rem;
+  }
+
+  .welcome-copy {
+    font-size: .8rem;
+  }
+
+  .welcome-portrait {
+    right: -155px;
+    width: 310px;
   }
 
   .book-cards {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    padding: 0 2px;
+    padding: 0;
   }
 
-  .book-card-name { font-size: .7rem; }
+  .book-card-body {
+    padding: 8px;
+  }
+
+  .book-card-name { font-size: .74rem; }
+
+  .home-feature {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    padding: 18px 16px;
+  }
+
+  .home-feature-icon {
+    width: 48px;
+    height: 48px;
+  }
 
   #chapter-view {
     padding: 16px 12px 72px;
@@ -1678,17 +2231,26 @@ body:not(.book-active) #sidebar {
   }
 
   #welcome {
-    padding: 12px 16px;
-    gap: 12px;
+    padding: 12px 16px 18px;
+    gap: 0;
   }
 
   .welcome-title h1 {
-    font-size: 1.1rem;
+    font-size: clamp(1.8rem, 6vw, 3.2rem);
+    margin-bottom: 6px;
+  }
+
+  .welcome-badge,
+  .welcome-copy,
+  .home-feature-strip,
+  .home-quote {
+    display: none;
   }
 
   .book-cards {
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    grid-template-columns: repeat(4, minmax(110px, 1fr));
     gap: 8px;
+    max-width: 720px;
   }
 
   #chapter-view {

@@ -7,11 +7,18 @@ const CatenaResizablePanel = (() => {
     let dragging = false;
     let startX = 0;
     let startWidth = 0;
+    const root = document.documentElement;
+
+    const setPanelWidth = (width) => {
+      panel.style.width = `${width}px`;
+      root.style.setProperty('--comm-panel-active-w', `${width}px`);
+    };
 
     const onStart = (clientX) => {
       dragging = true;
       startX = clientX;
       startWidth = panel.offsetWidth;
+      root.style.setProperty('--comm-panel-active-w', `${startWidth}px`);
       handle.classList.add('dragging');
       document.body.style.userSelect = 'none';
       document.body.style.cursor = 'col-resize';
@@ -20,7 +27,7 @@ const CatenaResizablePanel = (() => {
     const onMove = (clientX) => {
       if (!dragging) return;
       const nextWidth = Math.min(860, Math.max(320, startWidth + (startX - clientX)));
-      panel.style.width = `${nextWidth}px`;
+      setPanelWidth(nextWidth);
     };
 
     const onEnd = () => {

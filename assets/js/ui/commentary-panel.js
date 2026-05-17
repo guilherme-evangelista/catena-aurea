@@ -32,6 +32,7 @@ const CatenaCommentaryPanel = (() => {
 
     refs.commPanel.classList.add('open');
     refs.commPanel.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('commentary-open');
     return true;
   }
 
@@ -60,9 +61,10 @@ const CatenaCommentaryPanel = (() => {
   function close(options = {}) {
     const refs = CatenaDOM.refs;
     currentVsKey = null;
+    setMaximized(false);
     refs.commPanel.classList.remove('open');
     refs.commPanel.setAttribute('aria-hidden', 'true');
-    setMaximized(false);
+    document.body.classList.remove('commentary-open');
 
     if (options.clearHighlight === true) {
       clearHighlights();
@@ -77,6 +79,7 @@ const CatenaCommentaryPanel = (() => {
   function setMaximized(isMaximized) {
     const refs = CatenaDOM.refs;
     refs.commPanel.classList.toggle('is-maximized', isMaximized);
+    document.body.classList.toggle('commentary-maximized', isMaximized);
 
     if (!refs.commMaximize) return isMaximized;
 
