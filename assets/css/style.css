@@ -1567,6 +1567,60 @@ body:not(.book-active) #sidebar {
 
 .comm-control:hover { background: rgba(255, 255, 255, .12); color: var(--text); }
 
+.comm-control.is-copied {
+  color: var(--book-symbol);
+  border-color: color-mix(in srgb, var(--book-accent) 48%, var(--border));
+  background: color-mix(in srgb, var(--book-accent) 16%, rgba(255, 255, 255, .08));
+}
+
+.comm-control.is-copy-error {
+  color: #e46a6a;
+  border-color: color-mix(in srgb, #e46a6a 48%, var(--border));
+}
+
+.comm-copy-icon {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.comm-copy-icon::before,
+.comm-copy-icon::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 12px;
+  border: 1.6px solid currentColor;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.comm-copy-icon::before {
+  right: 1px;
+  bottom: 1px;
+}
+
+.comm-copy-icon::after {
+  left: 1px;
+  top: 1px;
+  opacity: .62;
+}
+
+#comm-copy.is-copied .comm-copy-icon::before {
+  left: 6px;
+  top: 1px;
+  width: 6px;
+  height: 12px;
+  border-width: 0 2px 2px 0;
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
+#comm-copy.is-copied .comm-copy-icon::after {
+  display: none;
+}
+
 .comm-maximize-icon {
   position: relative;
   display: block;

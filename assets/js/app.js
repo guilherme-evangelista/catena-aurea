@@ -117,8 +117,8 @@ const CatenaApp = (() => {
     return true;
   }
 
-  async function selectLiturgy(isoDate = CatenaState.liturgy.date, options = {}) {
-    const date = normalizeISODate(isoDate) || CatenaState.liturgy.date;
+  async function selectLiturgy(isoDate = todayISO(), options = {}) {
+    const date = normalizeISODate(isoDate) || todayISO();
 
     CatenaState.resetBookSelection();
     CatenaState.resetLiturgy(date);
@@ -197,7 +197,7 @@ const CatenaApp = (() => {
     if (refs.liturgyTab) {
       refs.liturgyTab.addEventListener('click', event => {
         event.preventDefault();
-        selectLiturgy(CatenaState.liturgy.date);
+        selectLiturgy(todayISO());
       });
     }
 
@@ -205,7 +205,7 @@ const CatenaApp = (() => {
       refs.welcomeLiturgy.addEventListener('click', event => {
         event.preventDefault();
         event.stopPropagation();
-        selectLiturgy(CatenaState.liturgy.date);
+        selectLiturgy(todayISO());
       });
     }
 
@@ -278,6 +278,10 @@ const CatenaApp = (() => {
         CatenaCommentaryPanel.toggleMaximized();
         writeCurrentRoute();
       });
+    }
+
+    if (refs.commCopy) {
+      refs.commCopy.addEventListener('click', () => CatenaCommentaryPanel.copyAll());
     }
 
     refs.commClose.addEventListener('click', () => closeCommentary());
@@ -372,7 +376,7 @@ const CatenaApp = (() => {
     if (hasLiturgyRoute) {
       return {
         view: 'liturgy',
-        date: normalizeISODate(params.get('data') || params.get('liturgia')) || CatenaState.liturgy.date,
+        date: normalizeISODate(params.get('data') || params.get('liturgia')) || todayISO(),
         commentaryKey: routeCommentary,
         maximized: routeMaximized,
       };
@@ -467,7 +471,7 @@ const CatenaApp = (() => {
 
     const liturgyHref = buildRouteSearch({
       view: 'liturgy',
-      date: CatenaState.liturgy.date,
+      date: todayISO(),
     });
 
     if (CatenaDOM.refs.liturgyTab) CatenaDOM.refs.liturgyTab.setAttribute('href', liturgyHref);
@@ -505,6 +509,10 @@ const CatenaApp = (() => {
     }
 
     return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+
+  function todayISO() {
+    return CatenaDate.toISODate(new Date());
   }
 
   function isMaxWindowRoute(params) {
