@@ -19,6 +19,7 @@ const CatenaDOM = (() => {
       commRef: document.getElementById('comm-ref'),
       commLabel: document.getElementById('comm-book-label'),
       commHeader: document.getElementById('comm-header'),
+      commCopy: document.getElementById('comm-copy'),
       commMaximize: document.getElementById('comm-maximize'),
       commClose: document.getElementById('comm-close'),
       commResize: document.getElementById('comm-resize'),
