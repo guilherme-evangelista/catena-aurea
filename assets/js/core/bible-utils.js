@@ -476,7 +476,7 @@ const CatenaBible = (() => {
     const range = parseCatenaRange(rangeStr);
     if (!range || range.start === range.end) return raw;
 
-    const startRe = new RegExp(`^\\s*${range.start}\\s*[\\u2013-]\\s*${range.end}\\.\\s*`);
+    const startRe = new RegExp(`^\\s*${range.start}(?:\\s*[\\u2013-]\\s*${range.end})?\\.\\s*`);
     if (!startRe.test(raw)) return raw;
 
     const firstFather = findFirstFatherLineIndex(raw);

@@ -72,7 +72,7 @@ const UPPERCASE_FATHER_RE = new RegExp(
 );
 
 /** Regex matching a verse number (e.g. "5. ") at the start of a paragraph. */
-const VERSE_NUM_RE = /^\s*(\d+)\.\s/;
+const VERSE_NUM_RE = /^\s*(\d+)\.\s*/;
 
 /**
  * Escape special HTML characters in a string.
@@ -132,51 +132,79 @@ function formatCommentary(raw, rangeStr = '') {
   const lines = splitInlineVerseMarkers(raw, rangeStr).split('\n');
   const merged = [];
   let current = '';
+  let currentIsLeadingQuote = false;
+  let hasSeenFather = false;
+
+  function pushCurrent() {
+    if (!current) return;
+    merged.push({
+      text: current,
+      isLeadingQuote: currentIsLeadingQuote,
+    });
+  }
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
+    const fatherMatch = matchFather(line);
+    const isLeadingQuote = !hasSeenFather && isRangeVerseStart(line, verseNums);
+    const isStart = isBlockStart(line, verseNums, {
+      allowLooseVerseStart: isLeadingQuote,
+    });
 
     if (!trimmed) {
       const nextNonBlank = findNextNonBlankLine(lines, i + 1);
       if (!nextNonBlank) break;
 
-      if (current && isBlockStart(nextNonBlank, verseNums)) {
-        merged.push(current);
+      const nextIsLeadingQuote = !hasSeenFather && isRangeVerseStart(nextNonBlank, verseNums);
+      if (current && isBlockStart(nextNonBlank, verseNums, {
+        allowLooseVerseStart: nextIsLeadingQuote,
+      })) {
+        pushCurrent();
         current = '';
+        currentIsLeadingQuote = false;
       }
       continue;
     }
 
     if (!current) {
       current = trimmed;
+      currentIsLeadingQuote = isLeadingQuote;
+      if (fatherMatch) hasSeenFather = true;
       continue;
     }
 
-    if (isBlockStart(line, verseNums)) {
-      merged.push(current);
+    if (isStart) {
+      pushCurrent();
       current = trimmed;
+      currentIsLeadingQuote = isLeadingQuote;
+      if (fatherMatch) hasSeenFather = true;
       continue;
     }
 
     current += (current.endsWith('-') ? '' : ' ') + trimmed;
+    if (fatherMatch) hasSeenFather = true;
   }
 
-  if (current) merged.push(current);
+  pushCurrent();
 
-  return merged.map(p => formatParagraph(p, verseNums)).join('');
+  return merged
+    .map(p => formatParagraph(p.text, verseNums, {
+      allowLooseVerseStart: p.isLeadingQuote,
+    }))
+    .join('');
 }
 
-function isBlockStart(line, verseNums) {
-  return !!matchFather(line) || startsRangeVerse(line, verseNums);
+function isBlockStart(line, verseNums, options = {}) {
+  return !!matchFather(line) || startsRangeVerse(line, verseNums, options);
 }
 
-function formatParagraph(paragraph, verseNums) {
+function formatParagraph(paragraph, verseNums, options = {}) {
   let source = String(paragraph || '');
   let prefix = '';
 
   const verseMatch = source.match(VERSE_NUM_RE);
-  if (verseMatch && verseNums.includes(Number(verseMatch[1])) && startsRangeVerse(source, verseNums)) {
+  if (verseMatch && verseNums.includes(Number(verseMatch[1])) && startsRangeVerse(source, verseNums, options)) {
     prefix += `<span class="vs-num">${escHtml(verseMatch[1])}.</span> `;
     source = source.slice(verseMatch[0].length);
   }
@@ -190,9 +218,16 @@ function formatParagraph(paragraph, verseNums) {
   return `<p>${prefix}${escHtml(source)}</p>`;
 }
 
-function startsRangeVerse(line, verseNums) {
-  const match = String(line || '').match(/^\s*(\d+)\.\s+(\S)/);
+function isRangeVerseStart(line, verseNums) {
+  const match = String(line || '').match(/^\s*(\d+)\.\s*(?=\S)/);
+  return !!match && verseNums.includes(Number(match[1]));
+}
+
+function startsRangeVerse(line, verseNums, options = {}) {
+  const loose = options.allowLooseVerseStart === true;
+  const match = String(line || '').match(loose ? /^\s*(\d+)\.\s*(\S)/ : /^\s*(\d+)\.\s+(\S)/);
   if (!match || !verseNums.includes(Number(match[1]))) return false;
+  if (loose) return true;
 
   return /^[A-Z\u00C0-\u00D6\u00D8-\u00DE"'“‘«([]/.test(match[2]);
 }
