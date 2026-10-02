@@ -11,6 +11,8 @@ const CatenaDOM = (() => {
       welcome: document.getElementById('welcome'),
       chapterView: document.getElementById('chapter-view'),
       liturgyView: document.getElementById('liturgy-view'),
+      contactView: document.getElementById('contact-view'),
+      contactTitle: document.getElementById('contact-title'),
       loading: document.getElementById('loading-indicator'),
       chapterList: document.getElementById('chapter-list'),
       sidebarLabel: document.getElementById('sidebar-label'),
@@ -28,6 +30,7 @@ const CatenaDOM = (() => {
       logoButton: document.getElementById('logo-btn'),
       logoMark: document.getElementById('logo-mark'),
       liturgyTab: document.getElementById('tab-liturgia'),
+      contactTab: document.getElementById('tab-contato'),
       themeToggle: document.getElementById('theme-mode-toggle'),
       chapterToggle: document.getElementById('chapter-toggle'),
       favicon: document.getElementById('favicon'),
@@ -37,6 +40,7 @@ const CatenaDOM = (() => {
       welcome: refs.welcome,
       chapter: refs.chapterView,
       liturgy: refs.liturgyView,
+      contact: refs.contactView,
       loading: refs.loading,
     };
   }
@@ -48,7 +52,10 @@ const CatenaDOM = (() => {
   }
 
   function setActiveBookTab(bookKey) {
-    document.querySelectorAll('.book-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.book-tab').forEach(btn => {
+      btn.classList.remove('active');
+      btn.removeAttribute('aria-current');
+    });
     if (!bookKey) return;
 
     const tab = document.getElementById(`tab-${bookKey}`);

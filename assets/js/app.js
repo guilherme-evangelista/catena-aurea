@@ -17,6 +17,7 @@ const CatenaApp = (() => {
 
   let lastBookKey = 'mateus';
   let isApplyingRoute = false;
+  let navigationId = 0;
 
   async function init() {
     CatenaDOM.init();
@@ -37,9 +38,10 @@ const CatenaApp = (() => {
   }
 
   function goHome(options = {}) {
+    navigationId += 1;
     CatenaState.resetBookSelection();
     applyTheme(lastBookKey);
-    document.body.classList.remove('book-active', 'liturgy-active', 'sidebar-open');
+    document.body.classList.remove('book-active', 'liturgy-active', 'contact-active', 'sidebar-open');
     CatenaChapterSidebar.hideToggle();
     CatenaDOM.setActiveBookTab(null);
     CatenaDOM.showPanel('welcome');
@@ -50,8 +52,26 @@ const CatenaApp = (() => {
     if (options.updateUrl !== false) writeCurrentRoute({ replace: options.replace === true });
   }
 
+  function selectContact(options = {}) {
+    navigationId += 1;
+    CatenaState.resetBookSelection();
+    applyTheme(lastBookKey);
+    document.body.classList.remove('book-active', 'liturgy-active', 'sidebar-open');
+    document.body.classList.add('contact-active');
+    CatenaChapterSidebar.hideToggle();
+    CatenaCommentaryPanel.close({ clearHighlight: true });
+    CatenaDOM.setActiveBookTab(null);
+    CatenaDOM.refs.contactTab.classList.add('active');
+    CatenaDOM.refs.contactTab.setAttribute('aria-current', 'page');
+    CatenaDOM.showPanel('contact');
+    CatenaDOM.refs.main.scrollTo({ top: 0, behavior: scrollBehavior(options) });
+    CatenaDOM.refs.contactTitle.focus({ preventScroll: true });
+    if (options.updateUrl !== false) writeCurrentRoute({ replace: options.replace === true });
+  }
+
   async function selectBook(bookKey, options = {}) {
     if (!isBookKey(bookKey)) return false;
+    const requestId = ++navigationId;
 
     lastBookKey = bookKey;
     CatenaState.currentBook = bookKey;
@@ -61,13 +81,14 @@ const CatenaApp = (() => {
     CatenaAppearance.updateFavicon(bookKey);
     CatenaDOM.setLogoSymbol(bookKey);
     document.body.classList.add('book-active');
-    document.body.classList.remove('liturgy-active');
+    document.body.classList.remove('liturgy-active', 'contact-active');
     CatenaChapterSidebar.updateMobileControls();
     CatenaDOM.setActiveBookTab(bookKey);
     CatenaDOM.showPanel('loading');
 
     try {
       const book = await CatenaDataService.loadBook(bookKey);
+      if (requestId !== navigationId) return false;
       const chapters = Object.keys(book.gospel).sort((a, b) => +a - +b);
       const requestedChapter = String(options.chapter || '');
       const chapter = chapters.includes(requestedChapter) ? requestedChapter : chapters[0];
@@ -82,6 +103,7 @@ const CatenaApp = (() => {
       });
       return true;
     } catch (err) {
+      if (requestId !== navigationId) return false;
       CatenaChapterRenderer.renderLoadError(err);
       return false;
     }
@@ -118,12 +140,13 @@ const CatenaApp = (() => {
   }
 
   async function selectLiturgy(isoDate = todayISO(), options = {}) {
+    const requestId = ++navigationId;
     const date = normalizeISODate(isoDate) || todayISO();
 
     CatenaState.resetBookSelection();
     CatenaState.resetLiturgy(date);
 
-    document.body.classList.remove('book-active', 'sidebar-open');
+    document.body.classList.remove('book-active', 'contact-active', 'sidebar-open');
     document.body.classList.add('liturgy-active');
     CatenaDOM.setActiveLiturgyTab();
     CatenaDOM.refs.sidebarLabel.textContent = 'Liturgia';
@@ -135,6 +158,7 @@ const CatenaApp = (() => {
 
     try {
       const data = await CatenaDataService.loadLiturgy(date);
+      if (requestId !== navigationId) return false;
       CatenaState.liturgy.data = data;
 
       const gospel = CatenaBible.firstReading(data.leituras?.evangelho);
@@ -149,6 +173,7 @@ const CatenaApp = (() => {
         CatenaAppearance.updateFavicon(gospelRef.bookKey);
         CatenaDOM.setLogoSymbol(gospelRef.bookKey);
         await CatenaDataService.loadBook(gospelRef.bookKey);
+        if (requestId !== navigationId) return false;
       } else {
         applyTheme(lastBookKey);
         CatenaAppearance.updateFavicon(lastBookKey);
@@ -170,6 +195,7 @@ const CatenaApp = (() => {
       if (options.updateUrl !== false) writeCurrentRoute({ replace: options.replace === true });
       return true;
     } catch (err) {
+      if (requestId !== navigationId) return false;
       console.error('[Catena Aurea] Liturgy load error:', err);
       CatenaLiturgyRenderer.renderError(err, date, { onSelectDate: selectLiturgy });
       CatenaDOM.showPanel('liturgy');
@@ -212,6 +238,12 @@ const CatenaApp = (() => {
     if (refs.themeToggle) {
       refs.themeToggle.addEventListener('click', CatenaAppearance.toggleColorMode);
     }
+
+    refs.contactTab.addEventListener('click', event => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      selectContact();
+    });
 
     refs.bookCards.addEventListener('click', event => {
       const card = event.target.closest('[data-book]');
@@ -333,6 +365,11 @@ const CatenaApp = (() => {
         return;
       }
 
+      if (route.view === 'contact') {
+        selectContact({ updateUrl: false, scroll: options.scroll });
+        return;
+      }
+
       if (route.view === 'liturgy') {
         await selectLiturgy(route.date, {
           updateUrl: false,
@@ -365,6 +402,7 @@ const CatenaApp = (() => {
 
   function readRoute() {
     const params = new URLSearchParams(window.location.search);
+    if (params.get('tela') === 'contato') return { view: 'contact' };
     const bookKey = normalizeBookKey(params.get('evangelho') || params.get('book') || params.get('livro'));
     const routeCommentary = params.get('comentario') || params.get('commentary') || null;
     const routeMaximized = isMaxWindowRoute(params);
@@ -396,6 +434,7 @@ const CatenaApp = (() => {
   }
 
   function getCurrentRoute() {
+    if (document.body.classList.contains('contact-active')) return { view: 'contact' };
     const panelState = CatenaCommentaryPanel.getState();
     const route = document.body.classList.contains('liturgy-active')
       ? {
@@ -448,6 +487,8 @@ const CatenaApp = (() => {
     } else if (route.view === 'liturgy') {
       params.set('tela', 'liturgia');
       params.set('data', route.date || CatenaState.liturgy.date);
+    } else if (route.view === 'contact') {
+      params.set('tela', 'contato');
     }
 
     if (route.commentaryKey) params.set('comentario', route.commentaryKey);

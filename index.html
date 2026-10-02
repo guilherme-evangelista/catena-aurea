@@ -23,7 +23,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="assets/css/style.css?v=20260519-comment-copy">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261002-contact">
 </head>
 <body>
   <div id="app">
@@ -61,6 +61,7 @@
           <span class="tab-symbol liturgy-symbol" aria-hidden="true">&#10016;</span>
           <span class="tab-label">Liturgia Di&aacute;ria</span>
         </a>
+      <a class="book-tab contact-tab" id="tab-contato" href="?tela=contato">Contato</a>
       <button class="book-tab theme-mode-btn" id="theme-mode-toggle" type="button" aria-label="Alternar modo claro" title="Alternar modo claro">
         <span class="mode-icon" aria-hidden="true"></span>
       </button>
@@ -154,6 +155,24 @@
       <!-- Daily liturgy -->
       <article id="liturgy-view" class="is-hidden" aria-label="Liturgia diaria"></article>
 
+      <article id="contact-view" class="is-hidden" aria-labelledby="contact-title">
+        <header class="contact-heading">
+          <h1 id="contact-title" tabindex="-1">Contato</h1>
+        </header>
+        <div class="contact-sections">
+          <section aria-labelledby="contact-report-title">
+            <h2 id="contact-report-title">Relatar um problema</h2>
+            <p>Encontrou um erro no site ou na tradu&ccedil;&atilde;o? Envie o trecho ou o link da p&aacute;gina e conte o que precisa ser corrigido.</p>
+            <a class="contact-link" href="mailto:guigomesevangelista@gmail.com?subject=Catena%20%C3%81urea%20-%20Relato%20de%20problema">guigomesevangelista@gmail.com</a>
+          </section>
+          <section aria-labelledby="contact-code-title">
+            <h2 id="contact-code-title">Contribuir com o c&oacute;digo</h2>
+            <p>Ajude a melhorar a Catena &Aacute;urea. O c&oacute;digo est&aacute; no GitHub e contribui&ccedil;&otilde;es s&atilde;o bem-vindas.</p>
+            <a class="contact-link" href="https://github.com/guilherme-evangelista/catena-aurea" target="_blank" rel="noopener noreferrer">Acessar reposit&oacute;rio no GitHub <span aria-hidden="true">&#8599;</span></a>
+          </section>
+        </div>
+      </article>
+
       <!-- Loading indicator -->
       <div id="loading-indicator" class="is-hidden" aria-live="polite">
         <div class="loading-spinner"></div>
@@ -193,7 +212,7 @@
   <script src="assets/js/core/text-utils.js?v=20260429-cross-chapter-markers"></script>
   <script src="assets/js/core/bible-utils.js?v=20260524-range-quote"></script>
   <script src="assets/js/core/state.js"></script>
-  <script src="assets/js/core/dom.js?v=20260519-comment-copy"></script>
+  <script src="assets/js/core/dom.js?v=20261002-contact"></script>
   <script src="assets/js/services/data-service.js"></script>
   <script src="assets/js/renderers/home-renderer.js?v=20260516-home-redesign"></script>
   <script src="assets/js/renderers/chapter-renderer.js"></script>
@@ -202,6 +221,6 @@
   <script src="assets/js/ui/chapter-sidebar.js"></script>
   <script src="assets/js/ui/commentary-panel.js?v=20260519-comment-copy"></script>
   <script src="assets/js/ui/resizable-panel.js?v=20260516-panel-layout"></script>
-  <script src="assets/js/app.js?v=20260519-liturgy-today"></script>
+  <script src="assets/js/app.js?v=20261002-contact"></script>
 </body>
 </html>
