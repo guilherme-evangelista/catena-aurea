@@ -228,7 +228,8 @@ const CatenaBible = (() => {
   }
 
   function parseReferenceRanges(ref) {
-    const source = String(ref || '');
+    // Trailing notes such as "(mais longo)" are not part of the verse range.
+    const source = String(ref || '').replace(/\s*\([^()]*\)\s*$/, '');
     const firstChapterMatch = source.match(/(\d+)\s*,/);
     if (!firstChapterMatch) return [];
 
@@ -287,7 +288,8 @@ const CatenaBible = (() => {
 
   function collectInlineVerseMarkers(text, options = {}) {
     const source = String(text || '');
-    const markerRe = /(^|[\s\n.!?;:,)"'“”‘’ʼʽ»\]])(\d{1,3}(?:[a-cA-C](?=$|[\s\n.!?;:,)"'“”‘’ʼʽ»\]\u200B\u200C\u200D\u2060\uFEFF]|["'“‘ʼʽ«([{]))?)[\u200B\u200C\u200D\u2060\uFEFF]*(?=$|\s+|[\u200B\u200C\u200D\u2060\uFEFF]|["'“”‘’ʼʽ«»([{]|[A-Za-z\u00C0-\u00FF])/g;
+    // The liturgy feed also uses a double prime (U+2033) as a quotation mark.
+    const markerRe = /(^|[\s\n.!?;:,)"'“”‘’ʼʽ»\u2033\]])(\d{1,3}(?:[a-cA-C](?=$|[\s\n.!?;:,)"'“”‘’ʼʽ»\u2033\]\u200B\u200C\u200D\u2060\uFEFF]|["'“‘ʼʽ«([{]))?)[\u200B\u200C\u200D\u2060\uFEFF]*(?=$|\s+|[\u200B\u200C\u200D\u2060\uFEFF]|["'“”‘’ʼʽ«»\u2033([{]|[A-Za-z\u00C0-\u00FF])/g;
     const matches = [];
     const allowedVerses = options.allowedVerses instanceof Set ? options.allowedVerses : null;
     const allowedLabels = options.allowedLabels instanceof Set ? options.allowedLabels : null;
@@ -375,7 +377,7 @@ const CatenaBible = (() => {
   }
 
   function collectInlineChapterMarkers(source, allowedChapterMarkers, allowedVerses) {
-    const chapterRe = /(^|[\s\n.!?;:,)"'\u201D\u2019\u00BB\]])(\d{1,3})\s*,\s*(\d+[a-cA-C]?)(?=$|\s+|["'\u201C\u2018\u00AB([{]|[A-Za-z\u00C0-\u00FF])/g;
+    const chapterRe = /(^|[\s\n.!?;:,)"'\u201D\u2019\u00BB\u2033\]])(\d{1,3})\s*,\s*(\d+[a-cA-C]?)(?=$|\s+|["'\u201C\u2018\u00AB\u2033([{]|[A-Za-z\u00C0-\u00FF])/g;
     const markers = [];
     let match;
 
