@@ -115,7 +115,8 @@ Sem dependências de terceiros. Sem bundler. Sem build step.
 
 ## Créditos
 
-- **Texto da Catena Áurea:** tradução para o português baseada na edição inglesa clássica de Oxford (1841–1845), revisada pela edição brasileira **Ecclesiae**
+- **Texto da Catena Áurea:** tradução para o português baseada na edição inglesa clássica de Oxford (1841–1845)
+- **Revisão da tradução:** realizada com auxílio do [Claude](https://claude.ai) (Anthropic). Nesta rodada, Marcos, Lucas e João estão revisados; falta concluir a revisão de Mateus.
 - **Compilação original:** Santo Tomás de Aquino (1225–1274)
 - **Fontes tipográficas:** Cinzel, Lora e Inter via [Google Fonts](https://fonts.google.com)
 - **Implementação digital:** gerada com auxílio do [Claude](https://claude.ai) (Anthropic)
