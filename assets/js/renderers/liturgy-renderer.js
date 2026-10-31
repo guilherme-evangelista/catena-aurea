@@ -156,18 +156,19 @@ const CatenaLiturgyRenderer = (() => {
 
     const hasCatena = !!(gospelRef && CatenaDataService.getBook(gospelRef.bookKey));
     const gospelText = gospel.texto || gospel.text || '';
+    const reference = CatenaBible.normalizeReference(gospel.referencia);
 
     return `
       <section class="liturgy-section liturgy-gospel fade-up">
         <div class="liturgy-section-header">
           <div>
             <div class="liturgy-kicker">Evangelho</div>
-            ${gospel.referencia ? `<div class="liturgy-reference">${CatenaText.escHtml(gospel.referencia)}</div>` : ''}
+            ${reference ? `<div class="liturgy-reference">${CatenaText.escHtml(reference)}</div>` : ''}
             ${gospel.titulo ? `<h2>${CatenaText.escHtml(gospel.titulo)}</h2>` : ''}
           </div>
         </div>
         <div class="liturgy-gospel-text">
-          ${renderGospelText(gospelText, gospelRef, gospel.referencia)}
+          ${renderGospelText(gospelText, gospelRef, reference)}
         </div>
         ${hasCatena ? `
           <p class="liturgy-hint">Catena &Aacute;urea dispon&iacute;vel para esta per&iacute;cope do Evangelho.</p>

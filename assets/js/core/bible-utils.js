@@ -227,9 +227,14 @@ const CatenaBible = (() => {
     return markers.size ? markers : null;
   }
 
+  function normalizeReference(ref) {
+    // Some API references end with stray not-sign characters (U+00AC).
+    return String(ref || '').replace(/\s*(?:\u00AC\s*)+$/, '');
+  }
+
   function parseReferenceRanges(ref) {
     // Trailing notes such as "(mais longo)" are not part of the verse range.
-    const source = String(ref || '').replace(/\s*\([^()]*\)\s*$/, '');
+    const source = normalizeReference(ref).replace(/\s*\([^()]*\)\s*$/, '');
     const firstChapterMatch = source.match(/(\d+)\s*,/);
     if (!firstChapterMatch) return [];
 
@@ -505,6 +510,7 @@ const CatenaBible = (() => {
     parseCatenaRange,
     parseGospelReference,
     parseVerseNumber,
+    normalizeReference,
     parseReferenceVerseSet,
     parseReferenceVerseLabelSet,
     parseReferenceChapterMarkerSet,
