@@ -10,6 +10,7 @@ const gospel = fixture.leituras.evangelho[0];
 const plainReference = 'Lc 14,1.7-11';
 const expectedVerses = [1, 7, 8, 9, 10, 11];
 const context = vm.createContext({
+  URLSearchParams,
   window: {},
   document: { getElementById: () => null },
   CatenaDOM: { refs: { liturgyView: { innerHTML: '' } } },

@@ -7,6 +7,7 @@ const { test } = require('node:test');
 const root = path.resolve(__dirname, '..');
 const fixture = JSON.parse(readFileSync(path.join(__dirname, 'fixtures/liturgy-2026-12-27.json'), 'utf8'));
 const context = vm.createContext({
+  URLSearchParams,
   window: {},
   document: { getElementById: () => null },
   CatenaDOM: { refs: { liturgyView: { innerHTML: '' } } },

@@ -1169,8 +1169,25 @@ body:not(.book-active) #sidebar {
 #liturgy-prev { justify-self: start; }
 #liturgy-next { justify-self: end; }
 
+.liturgy-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+}
+.liturgy-copy-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+.liturgy-copy-btn:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
 .liturgy-date-picker {
   min-width: min(320px, 58vw);
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1249,6 +1266,17 @@ body:not(.book-active) #sidebar {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 16px;
+}
+.liturgy-psalm-header > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.liturgy-psalm-search {
+  text-decoration: none;
+}
+.liturgy-psalm-search:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 .liturgy-collapse-summary {
   margin-bottom: 0;
@@ -1683,7 +1711,7 @@ body:not(.book-active) #sidebar {
   opacity: .62;
 }
 
-#comm-copy.is-copied .comm-copy-icon::before {
+.comm-control.is-copied .comm-copy-icon::before {
   left: 6px;
   top: 1px;
   width: 6px;
@@ -1693,7 +1721,7 @@ body:not(.book-active) #sidebar {
   transform: rotate(45deg);
 }
 
-#comm-copy.is-copied .comm-copy-icon::after {
+.comm-control.is-copied .comm-copy-icon::after {
   display: none;
 }
 
@@ -1877,6 +1905,7 @@ body:not(.book-active) #sidebar {
   }
   .liturgy-date-picker {
     min-width: 0;
+    flex: 1;
     gap: 6px;
     padding: 7px 8px;
   }
@@ -2268,6 +2297,15 @@ body:not(.book-active) #sidebar {
 
 /* ---- Very small phones (≤ 360px) ---- */
 @media (max-width: 360px) {
+  .liturgy-nav {
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+    gap: 6px;
+  }
+  .liturgy-day-btn {
+    width: 36px;
+    height: 36px;
+  }
+
   :root {
     --hdr-h: 52px;
   }

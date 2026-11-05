@@ -33,13 +33,13 @@ const CatenaLiturgyRenderer = (() => {
         ${renderReadingGroup('Leituras Complementares', readings.extras)}
       </div>`;
 
-    bindControls(handlers.onSelectDate);
+    bindControls(handlers.onSelectDate, data, gospelRef);
   }
 
   function renderError(err, isoDate, handlers = {}) {
     CatenaDOM.refs.liturgyView.innerHTML = `
       <div class="liturgy-shell">
-        ${renderControls(isoDate)}
+        ${renderControls(isoDate, false)}
         <section class="liturgy-section liturgy-error fade-up">
           <div class="liturgy-section-header">
             <div>
@@ -53,14 +53,19 @@ const CatenaLiturgyRenderer = (() => {
     bindControls(handlers.onSelectDate);
   }
 
-  function renderControls(isoDate) {
+  function renderControls(isoDate, canCopy = true) {
     return `
       <div class="liturgy-nav fade-up">
         <button class="liturgy-day-btn" id="liturgy-prev" aria-label="Dia anterior" title="Dia anterior">&lsaquo;</button>
-        <label class="liturgy-date-picker">
-          <span>Escolher dia</span>
-          <input type="date" id="liturgy-date" value="${CatenaText.escHtml(isoDate)}" aria-label="Escolher dia da liturgia">
-        </label>
+        <div class="liturgy-controls">
+          <label class="liturgy-date-picker">
+            <span>Escolher dia</span>
+            <input type="date" id="liturgy-date" value="${CatenaText.escHtml(isoDate)}" aria-label="Escolher dia da liturgia">
+          </label>
+          <button class="comm-control liturgy-copy-btn" id="liturgy-copy" type="button" aria-label="Copiar liturgia e coment&aacute;rios" title="Copiar liturgia e coment&aacute;rios"${canCopy ? '' : ' disabled'}>
+            <span class="comm-copy-icon" aria-hidden="true"></span>
+          </button>
+        </div>
         <button class="liturgy-day-btn" id="liturgy-next" aria-label="Dia seguinte" title="Dia seguinte">&rsaquo;</button>
       </div>`;
   }
@@ -135,20 +140,41 @@ const CatenaLiturgyRenderer = (() => {
 
     return readings.map(reading => {
       const readingText = reading.texto || reading.text || '';
+      const searchUrl = isPsalm ? buildPsalmSearchUrl(reading) : '';
 
       return `
         <section class="liturgy-section liturgy-reading fade-up">
-          <div class="liturgy-section-header">
+          <div class="liturgy-section-header${isPsalm ? ' liturgy-psalm-header' : ''}">
             <div>
               <div class="liturgy-kicker">${CatenaText.escHtml(label)}</div>
               ${reading.referencia ? `<div class="liturgy-reference">${CatenaText.escHtml(reading.referencia)}</div>` : ''}
               ${reading.titulo ? `<h2>${CatenaText.escHtml(reading.titulo)}</h2>` : ''}
             </div>
+            ${searchUrl ? `
+              <a class="comm-control liturgy-psalm-search" href="${CatenaText.escHtml(searchUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Pesquisar salmo no YouTube" title="Pesquisar salmo no YouTube">
+                <svg class="lucide lucide-search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.34-4.34"/>
+                </svg>
+              </a>
+            ` : ''}
           </div>
           ${isPsalm && reading.refrao ? `<p class="liturgy-psalm-response">${CatenaText.formatPlainText(reading.refrao)}</p>` : ''}
           <div class="liturgy-text">${CatenaText.formatVerseMarkers(readingText, reading.referencia)}</div>
         </section>`;
     }).join('');
+  }
+
+  function buildPsalmSearchUrl(reading) {
+    const query = [reading.referencia, reading.refrao, reading.texto || reading.text]
+      .filter(Boolean)
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!query) return '';
+
+    const params = new URLSearchParams({ search_query: query });
+    return `https://www.youtube.com/results?${params}`;
   }
 
   function renderGospelReading(gospel, gospelRef) {
@@ -226,14 +252,16 @@ const CatenaLiturgyRenderer = (() => {
     return `${intro}<p class="liturgy-verse-flow">${verses}</p>`;
   }
 
-  function bindControls(onSelectDate) {
+  function bindControls(onSelectDate, data, gospelRef) {
     const selectDate = typeof onSelectDate === 'function' ? onSelectDate : () => {};
     const prev = document.getElementById('liturgy-prev');
     const next = document.getElementById('liturgy-next');
     const date = document.getElementById('liturgy-date');
+    const copy = document.getElementById('liturgy-copy');
 
     if (prev) prev.addEventListener('click', () => selectDate(CatenaDate.shiftISODate(CatenaState.liturgy.date, -1)));
     if (next) next.addEventListener('click', () => selectDate(CatenaDate.shiftISODate(CatenaState.liturgy.date, 1)));
+    if (copy && data) copy.addEventListener('click', () => CatenaLiturgyCopy.copyAll(data, gospelRef, copy));
     if (date) {
       date.addEventListener('change', () => {
         if (date.value) selectDate(date.value);

@@ -8,6 +8,7 @@ const root = path.resolve(__dirname, '..');
 const fixture = JSON.parse(readFileSync(path.join(__dirname, 'fixtures/liturgy-2026-12-03.json'), 'utf8'));
 const gospel = fixture.leituras.evangelho[0];
 const context = vm.createContext({
+  URLSearchParams,
   window: {},
   document: { getElementById: () => null },
   CatenaDOM: { refs: { liturgyView: { innerHTML: '' } } },
